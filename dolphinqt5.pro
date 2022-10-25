@@ -10,11 +10,11 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp \
     selector.cpp
 
 HEADERS += \
     mainwindow.h \
+    menuitems.h \
     selector.h
 
 FORMS += \
