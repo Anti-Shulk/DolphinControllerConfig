@@ -19,7 +19,8 @@
 #include <QSettings>
 #include "selector.h"
 #include "menuitems.h"
-
+#include "QKeyEvent"
+#include <QShortcut>
 
 
 //TODO: for every value function, make a defualt value
@@ -35,7 +36,7 @@
 //TODO: move includes into header file
 //TODO: copy your settings.ini
 //TODO: check for settings then save them
-
+//TODO: make a thing saying controller disconnected
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -67,18 +68,45 @@ public:
 
     MainWindow(QWidget *parent = nullptr) : QMainWindow(parent) , ui(new Ui::MainWindow)
     {
-
-        QGamepad *gamepad = new QGamepad(QGamepadManager::instance()->connectedGamepads().at(0), this);
-
         ui->setupUi(this);
 
         this->showFullScreen();
 
-        connect(gamepad, &QGamepad::buttonAChanged, this, &MainWindow::aPressed);
-        connect(gamepad, &QGamepad::buttonUpChanged, this, &MainWindow::upPressed);
-        connect(gamepad, &QGamepad::buttonDownChanged, this, &MainWindow::downPressed);
-        connect(gamepad, &QGamepad::buttonLeftChanged, this, &MainWindow::leftPressed);
-        connect(gamepad, &QGamepad::buttonRightChanged, this, &MainWindow::rightPressed);
+        // create gamepad
+
+        if (QGamepadManager::instance()->isGamepadConnected(0))
+        {
+            QGamepad *gamepad = new QGamepad(QGamepadManager::instance()->connectedGamepads().at(0), this);
+
+            connect(gamepad, &QGamepad::buttonAChanged, this, &MainWindow::launchPressedCheck);
+            connect(gamepad, &QGamepad::buttonUpChanged, this, &MainWindow::upPressedCheck);
+            connect(gamepad, &QGamepad::buttonDownChanged, this, &MainWindow::downPressedCheck);
+            connect(gamepad, &QGamepad::buttonLeftChanged, this, &MainWindow::leftPressedCheck);
+            connect(gamepad, &QGamepad::buttonRightChanged, this, &::MainWindow::rightPresssedCheck);
+
+            // say gamepad is connected
+        }
+        else
+        {
+            // say no gamepad is connected
+        }
+        // create shortcuts for keyboard
+        QShortcut *down = new QShortcut(QKeySequence(Qt::Key_Down), this);
+        QShortcut *up = new QShortcut(QKeySequence(Qt::Key_Up), this);
+        QShortcut *left = new QShortcut(QKeySequence(Qt::Key_Left), this);
+        QShortcut *right = new QShortcut(QKeySequence(Qt::Key_Right), this);
+        QShortcut *enter = new QShortcut(QKeySequence(Qt::Key_Enter), this);
+
+        // connect 'activated' signal of shortcuts to MainWindow functions
+        QObject::connect(down, &QShortcut::activated, this, &MainWindow::downPressed);
+        QObject::connect(up, &QShortcut::activated, this, &MainWindow::upPressed);
+        QObject::connect(left, &QShortcut::activated, this, &MainWindow::leftPressed);
+        QObject::connect(right, &QShortcut::activated, this, &MainWindow::rightPressed);
+        QObject::connect(enter, &QShortcut::activated, this, &MainWindow::launchPressed);
+
+
+
+
 
         menuItems.initalize(std::initializer_list<QFrame*>{ui->PlayerFrame, ui->RealControllerFrame, ui->PortFrame, ui->EmulatedControllerFrame, ui->ProfileFrame, ui->LaunchFrame});
 
@@ -277,25 +305,25 @@ public:
 
     //    void writeControllerProfile(int controllerNumber, QString controllerType);
 
-        void setAsSelected(QFrame *frame)
-        {
-            frame->setStyleSheet("color: rgb(48, 48, 48);"
-                                 "background-color: white");
-        }
+//        void setAsSelected(QFrame *frame)
+//        {
+//            frame->setStyleSheet("color: rgb(48, 48, 48);"
+//                                 "background-color: white");
+//        }
 
-        void setAsDeselected(QFrame *frame)
-        {
-            frame->setStyleSheet("color: white;"
-                                 "background-color: rgb(48, 48, 48)");
-        }
+//        void setAsDeselected(QFrame *frame)
+//        {
+//            frame->setStyleSheet("color: white;"
+//                                 "background-color: rgb(48, 48, 48)");
+//        }
 
-        void setSelectedFrame(int frameNumber)
-        {
-            for (int i = 0; i < 6; ++i) {
-                if (i == frameNumber) setAsSelected(frames[i]);
-                else setAsDeselected(frames[i]);
-            }
-        }
+//        void setSelectedFrame(int frameNumber)
+//        {
+//            for (int i = 0; i < 6; ++i) {
+//                if (i == frameNumber) setAsSelected(frames[i]);
+//                else setAsDeselected(frames[i]);
+//            }
+//        }
 
 
 
@@ -674,245 +702,77 @@ public:
 
 
 private slots:
-        void aPressed(bool value)
+        void launchPressedCheck(bool value)
         {
             if (!value) return;
+            launchPressed();
+        }
+        void launchPressed()
+        {
             if (listSelector.getSelection() != 5) return;
             launch();
         }
 
-        void upPressed(bool value)
+        void upPressedCheck(bool value)
         {
             if (!value) return;
+            upPressed();
+        }
+        void upPressed()
+        {
             listSelector.decreaseSelection();
-            setSelectedFrame(listSelector.getSelection());
+            menuItems.setSelectedFrame(listSelector.getSelection());
         }
 
-
-        void downPressed(bool value)
+        void downPressedCheck(bool value)
         {
             if (!value) return;
+            downPressed();
+        }
+        void downPressed()
+        {
             listSelector.increaseSelection();
-            setSelectedFrame(listSelector.getSelection());
+            menuItems.setSelectedFrame(listSelector.getSelection());
         }
 
-        void leftPressed(bool value)
+        void leftPressedCheck(bool value)
         {
             if (!value) return;
-        //    switch (listSelector.getSelection()) {
-        //    case 0:
-        //        playerSelector.decreaseSelection(true);
-        //        ui->PlayerSelection->setText(arrowAdder("Player " + QString::number(playerSelector.getSelection())));
-        //        break;
-        //    case 1:
-        //        settings.beginGroup("RealControllers");
-        //        previousConfiguration.beginGroup("Player" + QString::number(playerSelector.getSelection()));
-        //        realControllerSelector.decreaseSelection(true);
-        //        ui->RealControllerSelection->setText(arrowAdder(settings.value(settings.childKeys().value(realControllerSelector.getSelection())).toString()));
-        //        previousConfiguration.setValue("RealController", settings.childKeys().value(realControllerSelector.getSelection()));
-        //        previousConfiguration.endGroup();
-        //        previousConfiguration.beginGroup("Player" + QString::number(playerSelector.getSelection()));
-        //        if (settings.childKeys().value(realControllerSelector.getSelection()) == "gc" || settings.childKeys().value(realControllerSelector.getSelection()) == "wii") {
-        //            isRealController = true;
-        //            ui->EmulatedControllerSelection->setText("Real Controller");
-        //            ui->ProfileSelectoin->setText("Real Controller");
-
-        //            previousConfiguration.setValue("Profile", "real");
-        //            previousConfiguration.endGroup();
-        //        }
-        //        else {
-        //            ui->EmulatedControllerSelection->setText(arrowAdder(" "));
-        //            previousConfiguration.setValue("Profile", "");
-        //            isRealController = false;
-        //        }
-        //        previousConfiguration.endGroup();
-        //        settings.endGroup();
-        //        break;
-        //    case 2:
-        //        previousConfiguration.beginGroup("Player" + QString::number(playerSelector.getSelection()));
-        //        if (isRealController) {
-        //            previousConfiguration.endGroup();
-        //            break;
-        //        }
-        //        isWiimote = !isWiimote;
-        //        if (isWiimote) {
-        //            ui->EmulatedControllerSelection->setText(arrowAdder("Wii Remote"));
-        //            previousConfiguration.setValue("EmulatedController", "wii");
-        //        } else {
-        //            ui->EmulatedControllerSelection->setText(arrowAdder("Gamecube Controller"));
-        //            previousConfiguration.setValue("EmulatedController", "gc");
-        //        }
-        //        previousConfiguration.endGroup();
-        //        break;
-        //    case 3:
-        ////        settings.beginGroup("ProfileSuffixes");
-        ////        previousConfiguration.beginGroup("Player" + QString::number(playerSelector.getSelection()));
-        ////        if (isRealController) {
-        ////            previousConfiguration.endGroup();
-        ////            settings.endGroup();
-        ////            break;
-        ////        }
-        ////        profileSelector.decreaseSelection(true);
-        ////        ui->ProfileSelectoin->setText(arrowAdder(settings.value(settings.childKeys().value(profileSelector.getSelection()), "fake profile").toString()));
-        ////        previousConfiguration.setValue("Profile", settings.childKeys().value(profileSelector.getSelection()));
-        ////        previousConfiguration.endGroup();
-        ////        settings.endGroup();
-        //        QFileInfoList newlist;
-        //        if (isWiimote) {
-        //            previousConfiguration.beginGroup("Player" + QString::number(playerSelector.getSelection()));
-        //            QDir dir("C:\\Users\\Me\\Documents\\Dolphin Emulator\\Config\\Profiles\\Wiimote");
-        //            const QFileInfoList list = dir.entryInfoList();
-        //            const QStringList list2 = settings.childKeys();
-        //            for (const QString &key: list2) {
-        //                for (const QFileInfo &fileinfo: list) {
-        //                    if (fileinfo.baseName().endsWith(key) && fileinfo.baseName().startsWith(previousConfiguration.value("RealController").toString())) {
-        //                        newlist.append(fileinfo);
-        //                        qDebug() << fileinfo.baseName();
-        //                    }
-        //                }
-        //            }
-        //            profileSelector.setMaxValue(newlist.count() - 1);
-        //            settings.endGroup();
-        //            previousConfiguration.endGroup();
-        //            profileSelector.decreaseSelection(true);
-        //            ui->ProfileSelectoin->setText(arrowAdder(newlist.at(profileSelector.getSelection()).baseName()));
-        //        } else {
-        //            settings.beginGroup("ProfileSuffixes");
-
-        //            previousConfiguration.beginGroup("Player" + QString::number(playerSelector.getSelection()));
-        //            QDir dir("C:\\Users\\Me\\Documents\\Dolphin Emulator\\Config\\Profiles\\GCPad");
-        //            const QFileInfoList list = dir.entryInfoList();
-        //            const QStringList list2 = settings.childKeys();
-        //            for (const QString &key: list2) {
-        //                for (const QFileInfo &fileinfo: list) {
-        //                    if (fileinfo.baseName().endsWith(key) && fileinfo.baseName().startsWith(previousConfiguration.value("RealController").toString())) {
-        //                        newlist.append(fileinfo);
-        //                        qDebug() << fileinfo.baseName();
-        //                    }
-        //                }
-        //            }
-        //            profileSelector.setMaxValue(newlist.count() - 1);
-        //            settings.endGroup();
-        //            previousConfiguration.endGroup();
-        //            profileSelector.decreaseSelection(true);
-        //            ui->ProfileSelectoin->setText(arrowAdder(newlist.at(profileSelector.getSelection()).baseName()));
-        //        }
-        //    }
+            leftPressed();
+        }
+        void leftPressed()
+        {
             selectionAction(false);
         }
 
-        void rightPressed(bool value)
+        void rightPresssedCheck(bool value)
         {
             if (!value) return;
-            selectionAction(true);
-        //    switch (itemSelector.getSelection()) {
-        //    case 0:
-        //        playerSelector.increaseSelection(true);
-        //        ui->PlayerSelection->setText(arrowAdder("Player " + QString::number(playerSelector.getSelection())));
-        //        break;
-        //    case 1:
-        //        settings.beginGroup("RealControllers");
-        //        previousConfiguration.beginGroup("Player" + QString::number(playerSelector.getSelection()));
-        //        realControllerSelector.increaseSelection(true);
-        //        ui->RealControllerSelection->setText(arrowAdder(settings.value(settings.childKeys().value(realControllerSelector.getSelection()), "fake controller").toString()));
-        //        previousConfiguration.setValue("RealController", settings.childKeys().value(realControllerSelector.getSelection()));
-        //        previousConfiguration.endGroup();
-        //        previousConfiguration.beginGroup("Player" + QString::number(playerSelector.getSelection()));
-        //        if (settings.childKeys().value(realControllerSelector.getSelection()) == "gc" || settings.childKeys().value(realControllerSelector.getSelection()) == "wii") {
-        //            isRealController = true;
-        //            ui->EmulatedControllerSelection->setText("Real Controller");
-        //            ui->ProfileSelectoin->setText("Real Controller");
-
-        //            previousConfiguration.setValue("Profile", "real");
-        //            previousConfiguration.endGroup();
-        //        }
-        //        else {
-        //            ui->EmulatedControllerSelection->setText(arrowAdder(" "));
-        //            ui->ProfileSelectoin->setText(arrowAdder(" "));
-        //            previousConfiguration.setValue("Profile", "");
-        //            isRealController = false;
-        //        }
-        //        previousConfiguration.endGroup();
-        //        settings.endGroup();
-        //        break;
-        //    case 2:
-        //        previousConfiguration.beginGroup("Player" + QString::number(playerSelector.getSelection()));
-        //        if (isRealController) {
-        //            previousConfiguration.endGroup();
-        //            break;
-        //        }
-        //        isWiimote = !isWiimote;
-        //        if (isWiimote) {
-        //            ui->EmulatedControllerSelection->setText(arrowAdder("Wii Remote"));
-        //            previousConfiguration.setValue("EmulatedController", "wii");
-        //        } else {
-        //            ui->EmulatedControllerSelection->setText(arrowAdder("Gamecube Controller"));
-        //            previousConfiguration.setValue("EmulatedController", "gc");
-        //        }
-        //        previousConfiguration.endGroup();
-        //        break;
-        //    case 3:
-
-        //        QFileInfoList newlist;
-        //        if (isWiimote) {
-        //            previousConfiguration.beginGroup("Player" + QString::number(playerSelector.getSelection()));
-        //            QDir dir("C:\\Users\\Me\\Documents\\Dolphin Emulator\\Config\\Profiles\\Wiimote");
-        //            const QFileInfoList list = dir.entryInfoList();
-        //            const QStringList list2 = settings.childKeys();
-        //            for (const QString &key: list2) {
-        //                for (const QFileInfo &fileinfo: list) {
-        //                    if (fileinfo.baseName().endsWith(key) && fileinfo.baseName().startsWith(previousConfiguration.value("RealController").toString())) {
-        //                        newlist.append(fileinfo);
-        //                        qDebug() << fileinfo.baseName();
-        //                    }
-        //                }
-        //            }
-        //            profileSelector.setMaxValue(newlist.count() - 1);
-        //            settings.endGroup();
-        //            previousConfiguration.endGroup();
-        //            profileSelector.increaseSelection(true);
-        //            ui->ProfileSelectoin->setText(arrowAdder(newlist.at(profileSelector.getSelection()).baseName()));
-        //        } else {
-        //            settings.beginGroup("ProfileSuffixes");
-
-        //            previousConfiguration.beginGroup("Player" + QString::number(playerSelector.getSelection()));
-        //            QDir dir("C:\\Users\\Me\\Documents\\Dolphin Emulator\\Config\\Profiles\\GCPad");
-        //            const QFileInfoList list = dir.entryInfoList();
-        //            const QStringList list2 = settings.childKeys();
-        //            for (const QString &key: list2) {
-        //                for (const QFileInfo &fileinfo: list) {
-        //                    if (fileinfo.baseName().endsWith(key) && fileinfo.baseName().startsWith(previousConfiguration.value("RealController").toString())) {
-        //                        newlist.append(fileinfo);
-        //                        qDebug() << fileinfo.baseName();
-        //                    }
-        //                }
-        //            }
-        //            profileSelector.setMaxValue(newlist.count() - 1);
-        //            settings.endGroup();
-        //            previousConfiguration.endGroup();
-        //            profileSelector.increaseSelection(true);
-        //            ui->ProfileSelectoin->setText(arrowAdder(newlist.at(profileSelector.getSelection()).baseName()));
-        //        }
-        //    }
-
-
-
-
-
-        //        settings.beginGroup("ProfileSuffixes");
-        //        previousConfiguration.beginGroup("Player" + QString::number(playerSelector.getSelection()));
-        //        if (isRealController) {
-        //            previousConfiguration.endGroup();
-        //            settings.endGroup();
-        //            break;
-        //        }
-        //        profileSelector.increaseSelection(true);
-        //        ui->ProfileSelectoin->setText(arrowAdder(settings.value(settings.childKeys().value(profileSelector.getSelection()), "fake profile").toString()));
-        //        previousConfiguration.setValue("Profile", settings.childKeys().value(profileSelector.getSelection()));
-        //        previousConfiguration.endGroup();
-        //        settings.endGroup();
-        //    }
+            rightPressed();
         }
+        void rightPressed()
+        {
+            selectionAction(true);
+        }
+
+
+        //        void keyPressEvent(QKeyEvent *event)
+        //        {
+        //            if(event->key() == Qt::Key_Up) {
+        //                upPressed(true);
+        //            }
+        //            else if(event->key() == Qt::Key_Down) {
+        //                downPressed(true);
+        //            }
+        //            else if(event->key() == Qt::Key_Enter) {
+        //            }
+
+        //            else {
+        //            QWidget::keyPressEvent(event);
+        //            }
+
+        //        }
+
 
 
 
