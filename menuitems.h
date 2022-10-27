@@ -25,8 +25,10 @@ public:
 
     void initalizationCheck()
     {
-        if (frames.empty()) qDebug() << "Menu Items not initalized. Menu Items class must be initalized after ui setup.";
-        throw std::exception{"uninitialized"};
+        if (frames.empty()) {
+            qDebug() << "Menu Items not initalized. Menu Items class must be initalized after ui setup.";
+            throw "uninitialized class";
+        }
     }
 
     void setSelectedFrame(int frameNumber)
