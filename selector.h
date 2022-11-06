@@ -6,32 +6,105 @@
 class Selector
 {
 public:
+    const bool isLooping;
+    int minValue;
+    int maxValue;
+    int increasingResetValue;
+    int decreasingResetValue;
     int selection;
 
-    int maxValue;
-
-    int minValue;
-
 public:
-    Selector(int initialValue, int minValue, int maxValue);
+    Selector(int initialValue, int minValue, int maxValue, bool isLooping) :
+        isLooping(isLooping),
+        minValue(minValue),
+        maxValue(maxValue),
+        increasingResetValue(isLooping ? minValue : maxValue),
+        decreasingResetValue(isLooping ? maxValue : minValue),
+        selection(initialValue)
+    {}
 
-    int getSelection();
+    enum Direction {
+        Increase, Decrease
+    };
 
-    void setSelection(int value);
+    void setMaxValue(int maxValue)
+    {
+        this->maxValue = maxValue;
+    }
 
-    void setMaxValue(int value);
 
-    void setMinValue(int value);
+    int getSelection()
+    {
+        return selection;
+    }
 
-    void increaseSelection();
+    void setSelection(int value)
+    {
+        selection = value;
+    }
 
-    void increaseSelection(bool loop);
+    void increaseSelection()
+    {
+        selection = selection >= maxValue ? increasingResetValue: selection + 1;
+    }
 
-    void modifySelection(bool increasing, bool loop);
+    void decreaseSelection()
+    {
+        selection = selection <= minValue ? decreasingResetValue : selection - 1;
+    }
 
-    void decreaseSelection();
+    void modifySelection(Direction direction)
+    {
+        switch (direction)
+        {
+        case Increase:
+            increaseSelection();
+            break;
+        case Decrease:
+            decreaseSelection();
+            break;
+        default:
+            increaseSelection();
+            break;
+        }
+    }
 
-    void decreaseSelection(bool loop);
+
+
+};
+
+class SelectorBuilder
+{
+private:
+    int initalValue = 0;
+    int minValue = 0;
+    int maxValue = 0;
+    bool isLooping = false;
+public:
+    SelectorBuilder& setInitalValue(int initalValue)
+    {
+        this->initalValue = initalValue;
+        return *this;
+    }
+    SelectorBuilder& setMinValue(int minValue)
+    {
+        this->minValue = minValue;
+        return *this;
+    }
+    SelectorBuilder& setMaxValue(int maxValue)
+    {
+        this->maxValue = maxValue;
+        return *this;
+    }
+    SelectorBuilder& setIsLooping(bool isLooping)
+    {
+        this->isLooping = isLooping;
+        return *this;
+    }
+    Selector build()
+    {
+        return Selector(initalValue, minValue, maxValue, isLooping);
+    }
 };
 
 #endif // SELECTOR_H

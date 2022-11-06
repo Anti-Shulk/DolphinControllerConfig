@@ -20,7 +20,6 @@ public:
     void initalize(std::initializer_list<QFrame*> frames)
     {
         this->frames = frames;
-        setSelectedFrame(0);
     }
 
     void initalizationCheck()
