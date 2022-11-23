@@ -38,6 +38,11 @@
 // TODO: make a thing saying controller disconnected
 // TODO: real controller selector should start from 1 maybe and also list selector too maybe
 // TODO: change the settings manager to enums instead of strings
+// TODO: by default the path says {username}. make it so that the {username} gets auto replaced with actual username
+// TODO: to see if the layout is a dolphin controler config one, check and make sure the layout has a {port} thing in it
+// TODO: this needs to be done bc program will crash if it doesnt
+// TODO: fix case where it cannot find the text it is lookign for bc its not htere when launching which causes infinite loop
+// TODO: port number needs to be replaced multiple times sometimes
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -163,9 +168,9 @@ public:
 
     void resetControllerProfiles()
     {
-        QFile dolphinWiimoteNewSettings(settingsManager.getSetting("Paths", "dolphinconfigpath") + "WiimoteNew.ini");
+        QFile dolphinWiimoteNewSettings(settingsManager.getSetting("Paths", "dolphinconfigpath") + "/" + "WiimoteNew.ini");
         QTextStream dolphinWiimoteNewSettingsStream(&dolphinWiimoteNewSettings);
-        QFile dolphinGCPadNewSettings(settingsManager.getSetting("Paths", "dolphinconfigpath") + "GCPadNew.ini");
+        QFile dolphinGCPadNewSettings(settingsManager.getSetting("Paths", "dolphinconfigpath") + "/" + "GCPadNew.ini");
         QTextStream dolphinGCPadNewSettingsStream(&dolphinGCPadNewSettings);
 
         if (!dolphinWiimoteNewSettings.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -180,6 +185,10 @@ public:
 
         dolphinWiimoteNewSettingsStream << "[Wiimote1]\n\n" << "[Wiimote2]\n\n" << "[Wiimote3]\n\n" << "[Wiimote4]\n\n" << "[BalanceBoard]\n" << "Source = 0";
         dolphinGCPadNewSettingsStream << "[GCPad1]\n\n" << "[GCPad2]\n\n" << "[GCPad3]\n\n" << "[GCPad4]\n\n";
+
+        dolphinWiimoteNewSettings.close();
+        dolphinGCPadNewSettings.close();
+
 
     }
 
@@ -365,12 +374,11 @@ public:
         // becuase they do not allow spaces or forward slashes in file names easily. instead, I am using file text streams to put the text into the files.
         resetControllerProfiles();
 
-        Writer gcPad(this, Writer::REPLACE_TEXT_ONLY, settingsManager.getSetting("Paths", "dolphinconfigpath") + "GCPadNew.ini");
-        Writer wiiMote(this, Writer::REPLACE_TEXT_ONLY, settingsManager.getSetting("Paths", "dolphinconfigpath") + "WiimoteNew.ini");
-        Writer dolphinConf(this, Writer::REPLACE_FULL_LINE, settingsManager.getSetting("Paths", "dolphinconfigpath") + "Dolphin.ini");
+        Writer gcPad(this, Writer::REPLACE_TEXT_ONLY, settingsManager.getSetting("Paths", "dolphinconfigpath") + "/" + "GCPadNew.ini");
+        Writer wiiMote(this, Writer::REPLACE_TEXT_ONLY, settingsManager.getSetting("Paths", "dolphinconfigpath") + "/" + "WiimoteNew.ini");
+        Writer dolphinConf(this, Writer::REPLACE_FULL_LINE, settingsManager.getSetting("Paths", "dolphinconfigpath") + "/" + "Dolphin.ini");
 
         for (int playerNumber = 1; playerNumber <= 4; playerNumber++) { // for each player
-            QString group = "Player" + QString::number(playerNumber);
             if (previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "EmulatedController") == "gc") {
 
                 // First replace the section of GC pad with our profile instead
@@ -380,6 +388,7 @@ public:
                             FileReader::fileToString(this, settingsManager.getSetting("Paths", "dolphinconfigpath") + "/Profiles" + "/GCPad" + "/" + previousConfigManager.getPlayerConfig(playerNumber, "Profile") + ".ini") // Replace with whatever profile name our previous configuration has selected
                                 .remove("[Profile]\n") // once we converted the file to a string, we remove [Profile] and replae the lines
                             );
+
 
 
                 // Replace {portNumber} with the port number in our new config file
@@ -393,6 +402,7 @@ public:
                             "SIDevice" + QString::number(playerNumber-1), // replaace text containing SIDevice of our port number
                             "SIDevice" + QString::number(playerNumber-1) + " = " + QString::number(previousConfigManager.getPlayerConfig(playerNumber, "Profile") == "realgc" ? 12: 6) // set the device to 12 if its a realgc or 6 if its emulated
                             );
+//                qDebug() << "hey";
 
                 // Edit Wiimote to remove Wiimote for this port
                 wiiMote.replaceFileTextAndSkipLines(

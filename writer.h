@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
+#include <QDebug>
 
 class Writer {
 public:
@@ -25,12 +26,18 @@ public:
         originalFile(filePath),
         parent(parent),
         mode(mode)
-    {}
+    {
+        if (!originalFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
+                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + originalFile.errorString());
+                return;
+        }
+
+
+    }
 
     ~Writer()
     {
         originalFile.close();
-        delete parent;
     }
 
     void setMode(Mode mode)
@@ -41,18 +48,13 @@ public:
     void replaceFileText(QString toBeReplaced, QString toReplaceWith)
     {
         // Make temp file
-        QFile tempFile(filePath.append(".tmp"));
-
-
-        if (!originalFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
-                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + originalFile.errorString());
-                return;
-        }
+        QFile tempFile(filePath + ".tmp");
 
         if (!tempFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
                 QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to create temporary file: ") + tempFile.errorString());
                 return;
         }
+
 
 
         QTextStream originalFileStream(&originalFile);
@@ -96,12 +98,7 @@ public:
 
     }
     void replaceFileTextAndSkipLines(QString skipStart, QString skipEnd, QString toReplaceWith) {
-        QFile tempFile(filePath.append(".tmp"));
-
-        if (!originalFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
-                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + originalFile.errorString());
-                return;
-        }
+        QFile tempFile(filePath + ".tmp");
 
         if (!tempFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
                 QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to create temporary file: ") + tempFile.errorString());
