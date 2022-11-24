@@ -45,6 +45,7 @@
 // TODO: fix case where it cannot find the text it is lookign for bc its not htere when launching which causes infinite loop
 // TODO: port number needs to be replaced multiple times sometimes
 // TODO: make a do not write config
+// TODO: FOOOOONNNTTTT
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -111,13 +112,18 @@ private:
     QShortcut* left;
     QShortcut* right;
     QShortcut* enter;
+    QStringList args;
 
 
 public:
 
 
-    MainWindow(QWidget *parent = nullptr) : QMainWindow(parent) , ui(new Ui::MainWindow)
+    MainWindow(QStringList args, QWidget *parent = nullptr) : QMainWindow(parent) , ui(new Ui::MainWindow), args(args)
     {
+        qDebug() << args.at(0);
+        qDebug() << args.at(1);
+//        qDebug() << args.at(2);
+//        qDebug() << args.at(3);
         ui->setupUi(this);
 
         this->showFullScreen();
@@ -509,8 +515,11 @@ public:
 
             }
         }
-//            QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), QStringList());
-//            QApplication::quit();
+
+//            QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), QStringList("--exec=C:/Users/Justi/Documents/Games/Console/Nintendo GameCube/Super Smash Bros. Melee (USA).iso"));
+        QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), args);
+        QThread::sleep(5);
+        QApplication::quit();
     }
 
 
