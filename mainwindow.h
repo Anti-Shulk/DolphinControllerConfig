@@ -39,6 +39,7 @@
 // TODO: make a thing saying controller disconnected
 // TODO: real controller selector should start from 1 maybe and also list selector too maybe
 //// TODO: change the settings manager to enums instead of strings
+//// rename exe file
 // TODO: by default the path says {username}. make it so that the {username} gets auto replaced with actual username
 // TODO: to see if the layout is a dolphin controler config one, check and make sure the layout has a {port} thing in it
 // TODO: this needs to be done bc program will crash if it doesnt
@@ -120,7 +121,10 @@ public:
 
     MainWindow(QStringList args, QWidget *parent = nullptr) : QMainWindow(parent) , ui(new Ui::MainWindow), args(args)
     {
-        if (settingsManager.getSetting("Setup", "setup") == "") {
+        if (settingsManager.getSetting("Setup", "setup") != "true") {
+            settingsManager.setSetting("Setup", "setup", "false");
+            settingsManager.setSetting("RealControllers", "ex", "Example Controller");
+            settingsManager.setSetting("ProfileSuffixes", "examplesuffix", "with example suffix");
             QMessageBox::warning(this, tr("Warning"), tr("DolphinControllerConfigurator has not been setup. Please read README.md. "
                                                          "For more information see https://github.com/Anti-Shulk/DolphinControllerConfig"));
             QApplication::quit();
