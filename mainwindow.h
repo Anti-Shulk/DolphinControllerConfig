@@ -22,6 +22,7 @@
 #include "writer.h"
 #include "SettingsManager.h"
 #include "PreviousConfigurationManager.h"
+#include <QThread>
 
 // TODO: for every value function, make a defualt value
 // TODO: dont modify if it wasnt modified by us
@@ -43,6 +44,7 @@
 // TODO: this needs to be done bc program will crash if it doesnt
 // TODO: fix case where it cannot find the text it is lookign for bc its not htere when launching which causes infinite loop
 // TODO: port number needs to be replaced multiple times sometimes
+// TODO: make a do not write config
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -102,6 +104,15 @@ private:
     SettingsManager settingsManager;
     PreviousConfigurationManager previousConfigManager;
 
+    QGamepad* gamepad;
+
+    QShortcut* up;
+    QShortcut* down;
+    QShortcut* left;
+    QShortcut* right;
+    QShortcut* enter;
+
+
 public:
 
 
@@ -113,30 +124,35 @@ public:
 
         // create gamepad
 
-        if (QGamepadManager::instance()->isGamepadConnected(0)) // this doesnt work
-        {
-            QGamepad *gamepad = new QGamepad(QGamepadManager::instance()->connectedGamepads().at(0), this); // this crashes on debug builds
+        gamepad = new QGamepad(QGamepadManager::instance()->connectedGamepads().at(0), this); // this crashes on debug builds
 
-            connect(gamepad, &QGamepad::buttonAChanged, this, &MainWindow::launchPressedCheck);
-            connect(gamepad, &QGamepad::buttonUpChanged, this, &MainWindow::upPressedCheck);
-            connect(gamepad, &QGamepad::buttonDownChanged, this, &MainWindow::downPressedCheck);
-            connect(gamepad, &QGamepad::buttonLeftChanged, this, &MainWindow::leftPressedCheck);
-            connect(gamepad, &QGamepad::buttonRightChanged, this, &::MainWindow::rightPresssedCheck);
+        connect(gamepad, &QGamepad::buttonAChanged, this, &MainWindow::launchPressedCheck);
+        connect(gamepad, &QGamepad::buttonUpChanged, this, &MainWindow::upPressedCheck);
+        connect(gamepad, &QGamepad::buttonDownChanged, this, &MainWindow::downPressedCheck);
+        connect(gamepad, &QGamepad::buttonLeftChanged, this, &MainWindow::leftPressedCheck);
+        connect(gamepad, &QGamepad::buttonRightChanged, this, &::MainWindow::rightPresssedCheck);
 
-            ui->ControllerStatusSelection->setText("Connected");
-        }
-        else
-        {
-            // say no gamepad is connected
-        }
+        ui->ControllerStatusSelection->setText("Connected");
+
+//        if (QGamepadManager::instance()->isGamepadConnected(0)) // this doesnt work
+//        {
+
+
+
+//        }
+//        else
+//        {
+//            ui->ControllerStatusSelection->setText("Disconnected");
+//            // say no gamepad is connected
+//        }
 
 
         // create shortcuts for keyboard
-        QShortcut *down = new QShortcut(QKeySequence(Qt::Key_Down), this);
-        QShortcut *up = new QShortcut(QKeySequence(Qt::Key_Up), this);
-        QShortcut *left = new QShortcut(QKeySequence(Qt::Key_Left), this);
-        QShortcut *right = new QShortcut(QKeySequence(Qt::Key_Right), this);
-        QShortcut *enter = new QShortcut(QKeySequence(Qt::Key_Space), this);
+        down = new QShortcut(QKeySequence(Qt::Key_Down), this);
+        up = new QShortcut(QKeySequence(Qt::Key_Up), this);
+        left = new QShortcut(QKeySequence(Qt::Key_Left), this);
+        right = new QShortcut(QKeySequence(Qt::Key_Right), this);
+        enter = new QShortcut(QKeySequence(Qt::Key_Space), this);
 
         // connect 'activated' signal of shortcuts to MainWindow functions
         QObject::connect(down, &QShortcut::activated, this, &MainWindow::downPressed);
@@ -163,6 +179,13 @@ public:
     ~MainWindow()
     {
         delete ui;
+
+        delete gamepad;
+        delete up;
+        delete down;
+        delete left;
+        delete right;
+        delete enter;
     }
 
 
@@ -264,13 +287,22 @@ public:
     void setProfile(QString profile)
     {
         previousConfigManager.setPlayerConfig(playerSelector.getSelection(), "Profile", profile);
-        ui->ProfileSelectoin->setText(arrowAdder(profile));
+
+        if (profile == "realwii" || profile == "realgc") {
+            ui->ProfileSelectoin->setText("Real Controller");
+            return;
+        }
+
+//        QString prefix = settingsManager.getSetting("RealControllers", previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "RealController"));
+        QString suffix = settingsManager.getSetting("ProfileSuffixes", profile.remove(previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "RealController")));
+
+        ui->ProfileSelectoin->setText(arrowAdder(suffix));
     }
 
 
     bool isRealController()
     {
-        return (settingsManager.getKeys("RealControllers").value(realControllerSelector.getSelection()) == "gc") || (settingsManager.getKeys("RealControllers").value(realControllerSelector.getSelection()) == "wii");
+        return (previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "RealController") == "gc" || previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "RealController") == "wii");
     }
 
 
@@ -288,25 +320,29 @@ public:
         if (previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "RealController") == "gc") { // if the real controllers are wii and gamecube, update emulated controllers and profile
             setEmulatedControllerWithoutArrows(0);
             setProfile("realgc");
-            ui->ProfileSelectoin->setText("Real Controller");
             return;
-        } else if (previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "RealController") == "wii") {
+        }
+        if (previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "RealController") == "wii") {
             setEmulatedControllerWithoutArrows(1);
             setProfile("realwii");
-            ui->ProfileSelectoin->setText("Real Controller");
             return;
-        } else {
-            setEmulatedController(previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "EmulatedController"));
-            setProfile(previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "Profile"));
         }
+        setEmulatedController(previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "EmulatedController"));
+
+        if ((previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "Profile") == "none")) {
+            ui->ProfileSelectoin->setText("No Profiles Match Criteria");
+            return;
+        }
+
+        setProfile(previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "Profile"));
 
 
     }
 
 
-    void selectionAction(Selector::Direction direction)
+    void selectionAction(Selector::Direction direction, int listLevel)
     {
-        switch (listSelector.getSelection()) { // Which up/down level are we on?
+        switch (listLevel) { // Which up/down level are we on?
         default:
         break;
         case 0: /* Players */
@@ -317,20 +353,20 @@ public:
         case 1: /* Real Controllers*/
             realControllerSelector.modifySelection(direction);
             setRealController(settingsManager.getKeys("RealControllers").at(realControllerSelector.getSelection())); // update real controller
+            qDebug() << "\n";
 
             if (settingsManager.getKeys("RealControllers").value(realControllerSelector.getSelection()) == "gc") {
                 setEmulatedControllerWithoutArrows(0);
                 setProfile("realgc");
-                ui->ProfileSelectoin->setText("Real Controller");
                 break;
             } else if (settingsManager.getKeys("RealControllers").value(realControllerSelector.getSelection()) == "wii") {
                 setEmulatedControllerWithoutArrows(1);
                 setProfile("realwii");
-                ui->ProfileSelectoin->setText("Real Controller");
                 break;
             }
             ui->EmulatedControllerSelection->setText(arrowAdder(" "));
             ui->ProfileSelectoin->setText(arrowAdder(" "));
+            selectionAction(Selector::Increase, 3);
         break;
         case 2: /* Ports */
             portSelector.modifySelection(direction); // loops
@@ -340,6 +376,7 @@ public:
             if (isRealController()) break;
             emulatedControllerSelector.modifySelection(direction); //loops
             setCurrentEmulatedController();
+            selectionAction(Selector::Increase, 4);
         break;
         case 4:
             QDir dir;
@@ -357,7 +394,12 @@ public:
                     }
                 }
             }
-            if (usableProfiles.empty()) break;
+            if (usableProfiles.empty()) {
+                if (isRealController()) break;
+                setProfile("none");
+                ui->ProfileSelectoin->setText("No Profiles Match Criteria");
+                break;
+            }
 
             profileSelector.setMaxValue(usableProfiles.count() - 1);
             profileSelector.modifySelection(direction);
@@ -379,9 +421,27 @@ public:
         Writer dolphinConf(this, Writer::REPLACE_FULL_LINE, settingsManager.getSetting("Paths", "dolphinconfigpath") + "/" + "Dolphin.ini");
 
         for (int playerNumber = 1; playerNumber <= 4; playerNumber++) { // for each player
-            if (previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "EmulatedController") == "gc") {
+            if (previousConfigManager.getPlayerConfig(playerNumber, "EmulatedController") == "gc") {
 
-                // First replace the section of GC pad with our profile instead
+                // Edit Wiimote to remove Wiimote for this port
+                wiiMote.replaceFileTextAndSkipLines(
+                            "[Wiimote" + QString::number(playerNumber) + "]", // to replace start
+                            playerNumber == 4 ? "[BalanceBoard]" : "[Wiimote" + QString::number(playerNumber+1) + "]", // to replace end
+                            "Source = 0\n" // to replace with
+                            );
+
+                if (previousConfigManager.getPlayerConfig(playerNumber, "Profile") == "none")
+                {
+                    // Edit SIDevice in dolphin config file to 0 bc this controller doesnt have a profile
+                    dolphinConf.replaceFileText(
+                                "SIDevice" + QString::number(playerNumber-1), // replaace text containing SIDevice of our port number
+                                "SIDevice" + QString::number(playerNumber-1) + " = 0" // set the device to 12 if its a realgc or 6 if its emulated
+                                );
+                    continue;
+                }
+
+
+                 // First replace the section of GC pad with our profile instead
                 gcPad.replaceFileTextAndSkipLines(
                             "[GCPad" + QString::number(playerNumber) + "]", // skip start
                             playerNumber == 4 ? "\n\n\n": "[GCPad" + QString::number(playerNumber+1) + "]", // skip end
@@ -404,14 +464,27 @@ public:
                             );
 //                qDebug() << "hey";
 
-                // Edit Wiimote to remove Wiimote for this port
-                wiiMote.replaceFileTextAndSkipLines(
-                            "[Wiimote" + QString::number(playerNumber) + "]", // to replace start
-                            playerNumber == 4 ? "[BalanceBoard]" : "[Wiimote" + QString::number(playerNumber+1) + "]", // to replace end
-                            "Source = 0\n" // to replace with
-                            );
+
 
             } else {
+                // Edit SIDevice to remove gc controller
+                dolphinConf.replaceFileText(
+                            "SIDevice" + QString::number(playerNumber-1),
+                            "SIDevice" + QString::number(playerNumber-1) + " = 0"
+                            );
+
+                if (previousConfigManager.getPlayerConfig(playerNumber, "Profile") == "none")
+                {
+                    // Edit wiimote to 0 bc this controller doesnt have a profile
+                    wiiMote.replaceFileTextAndSkipLines(
+                                "[Wiimote" + QString::number(playerNumber) + "]", // to replace start
+                                playerNumber == 4 ? "[BalanceBoard]" : "[Wiimote" + QString::number(playerNumber+1) + "]", // to replace end
+                                "Source = 0\n" // to replace with
+                                );
+                    continue;
+                }
+
+
                 // First replace the section of wiimote  with our profile instead
                 wiiMote.replaceFileTextAndSkipLines(
                             "[Wiimote" + QString::number(playerNumber) + "]", // skip start
@@ -433,15 +506,11 @@ public:
                                                     QString::number(previousConfigManager.getPlayerConfig(playerNumber, "Profile") == "realwii" ? 2: 1)
                                         );
 
-                // Edit SIDevice to remove gc controller
-                dolphinConf.replaceFileText(
-                            "SIDevice" + QString::number(playerNumber-1),
-                            "SIDevice" + QString::number(playerNumber-1) + " = 0\n"
-                            );
+
             }
         }
-            QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), QStringList());
-            QApplication::quit();
+//            QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), QStringList());
+//            QApplication::quit();
     }
 
 
@@ -487,7 +556,7 @@ private slots:
     }
     void leftPressed()
     {
-        selectionAction(Selector::Decrease);
+        selectionAction(Selector::Decrease, listSelector.getSelection());
     }
 
     void rightPresssedCheck(bool value)
@@ -497,7 +566,7 @@ private slots:
     }
     void rightPressed()
     {
-        selectionAction(Selector::Increase);
+        selectionAction(Selector::Increase, listSelector.getSelection());
     }
 
 };

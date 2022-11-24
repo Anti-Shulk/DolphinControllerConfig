@@ -15,8 +15,8 @@ public:
 private:
     QString filePath;
     QFile originalFile;
-    QWidget* parent;
     Mode mode = REPLACE_TEXT_ONLY;
+    QFile tempFile;
 
 
 
@@ -24,20 +24,24 @@ public:
     Writer(QWidget* parent, Mode mode, QString filePath) :
         filePath(filePath),
         originalFile(filePath),
-        parent(parent),
-        mode(mode)
+        mode(mode),
+        tempFile(filePath + ".tmp")
     {
         if (!originalFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
                 QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + originalFile.errorString());
                 return;
         }
 
-
+        if (!tempFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
+                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to create temporary file: ") + tempFile.errorString());
+                return;
+        }
     }
 
     ~Writer()
     {
         originalFile.close();
+        tempFile.remove();
     }
 
     void setMode(Mode mode)
@@ -47,18 +51,12 @@ public:
 
     void replaceFileText(QString toBeReplaced, QString toReplaceWith)
     {
-        // Make temp file
-        QFile tempFile(filePath + ".tmp");
-
-        if (!tempFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
-                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to create temporary file: ") + tempFile.errorString());
-                return;
-        }
-
-
-
         QTextStream originalFileStream(&originalFile);
         QTextStream tempFileStream(&tempFile);
+
+        // reset the stream to the beginning positions
+        tempFileStream.seek(0);
+        originalFileStream.seek(0);
 
         QString line;
 
@@ -92,21 +90,16 @@ public:
             line = tempFileStream.readLine();
             originalFileStream << line + "\n";
         }
-
-        // delete the temp file
-        tempFile.remove();
-
     }
     void replaceFileTextAndSkipLines(QString skipStart, QString skipEnd, QString toReplaceWith) {
-        QFile tempFile(filePath + ".tmp");
-
-        if (!tempFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
-                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to create temporary file: ") + tempFile.errorString());
-                return;
-        }
 
         QTextStream originalFileStream(&originalFile);
         QTextStream tempFileStream(&tempFile);
+
+        // reset the stream to the beginning positions
+        tempFileStream.seek(0);
+        originalFileStream.seek(0);
+
         QString line;
 
         while (!originalFileStream.atEnd()) { // copy file as normal
@@ -138,9 +131,6 @@ public:
         while (!tempFileStream.atEnd()) // write the temp stream into original file
             originalFileStream << tempFileStream.readLine() + "\n";
 
-        // delete the temp file
-        tempFile.remove();
-
     }
 
 };
@@ -155,6 +145,7 @@ public:
                 QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + file.errorString());
                 return nullptr;
         }
+
         QTextStream stream(&file);
         while (!stream.atEnd()) {
             contents.append(stream.readLine() + "\n");
