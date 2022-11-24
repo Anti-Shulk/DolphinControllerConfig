@@ -5,7 +5,7 @@
 
 class Selector
 {
-public:
+private:
     const bool isLooping;
     int minValue;
     int maxValue;
@@ -30,6 +30,8 @@ public:
     void setMaxValue(int maxValue)
     {
         this->maxValue = maxValue;
+        increasingResetValue = isLooping ? minValue : maxValue;
+        decreasingResetValue = isLooping ? maxValue : minValue;
     }
 
 
