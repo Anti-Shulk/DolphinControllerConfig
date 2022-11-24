@@ -79,7 +79,7 @@ background-color: rgb(48, 48, 48);</string>
         <property name="font">
          <font>
           <family>Cantarell Extra Bold</family>
-          <pointsize>14</pointsize>
+          <pointsize>18</pointsize>
           <bold>true</bold>
          </font>
         </property>
@@ -99,7 +99,8 @@ background-color: rgb(48, 48, 48);</string>
         <property name="font">
          <font>
           <family>Cantarell</family>
-          <pointsize>14</pointsize>
+          <pointsize>16</pointsize>
+          <bold>true</bold>
          </font>
         </property>
         <property name="styleSheet">
@@ -165,7 +166,7 @@ color: rgb(255, 255, 255);</string>
         <property name="font">
          <font>
           <family>Cantarell Extra Bold</family>
-          <pointsize>14</pointsize>
+          <pointsize>18</pointsize>
           <bold>true</bold>
          </font>
         </property>
@@ -185,7 +186,8 @@ color: rgb(255, 255, 255);</string>
         <property name="font">
          <font>
           <family>Cantarell</family>
-          <pointsize>14</pointsize>
+          <pointsize>16</pointsize>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
@@ -248,7 +250,7 @@ color: rgb(255, 255, 255);</string>
         <property name="font">
          <font>
           <family>Cantarell Extra Bold</family>
-          <pointsize>14</pointsize>
+          <pointsize>18</pointsize>
           <bold>true</bold>
          </font>
         </property>
@@ -268,7 +270,8 @@ color: rgb(255, 255, 255);</string>
         <property name="font">
          <font>
           <family>Cantarell</family>
-          <pointsize>14</pointsize>
+          <pointsize>16</pointsize>
+          <bold>true</bold>
          </font>
         </property>
         <property name="styleSheet">
@@ -334,7 +337,7 @@ color: rgb(255, 255, 255);</string>
         <property name="font">
          <font>
           <family>Cantarell Extra Bold</family>
-          <pointsize>14</pointsize>
+          <pointsize>18</pointsize>
           <bold>true</bold>
          </font>
         </property>
@@ -354,7 +357,8 @@ color: rgb(255, 255, 255);</string>
         <property name="font">
          <font>
           <family>Cantarell</family>
-          <pointsize>14</pointsize>
+          <pointsize>16</pointsize>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
@@ -417,7 +421,7 @@ background-color: rgb(48, 48, 48);</string>
         <property name="font">
          <font>
           <family>Cantarell Extra Bold</family>
-          <pointsize>14</pointsize>
+          <pointsize>18</pointsize>
           <bold>true</bold>
          </font>
         </property>
@@ -481,7 +485,7 @@ background-color: rgb(48, 48, 48);</string>
         <property name="font">
          <font>
           <family>Cantarell Extra Bold</family>
-          <pointsize>14</pointsize>
+          <pointsize>18</pointsize>
           <bold>true</bold>
          </font>
         </property>
@@ -501,7 +505,8 @@ background-color: rgb(48, 48, 48);</string>
         <property name="font">
          <font>
           <family>Cantarell</family>
-          <pointsize>14</pointsize>
+          <pointsize>16</pointsize>
+          <bold>true</bold>
          </font>
         </property>
         <property name="styleSheet">
@@ -567,12 +572,12 @@ color: rgb(255, 255, 255);</string>
         <property name="font">
          <font>
           <family>Cantarell Extra Bold</family>
-          <pointsize>14</pointsize>
+          <pointsize>18</pointsize>
           <bold>true</bold>
          </font>
         </property>
         <property name="text">
-         <string>Dolphin Config Window:</string>
+         <string>Dolphin Config Window</string>
         </property>
        </widget>
       </item>
@@ -587,7 +592,8 @@ color: rgb(255, 255, 255);</string>
         <property name="font">
          <font>
           <family>Cantarell</family>
-          <pointsize>14</pointsize>
+          <pointsize>16</pointsize>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/fonts">
+        <file alias="Cantarell">Cantarell-VF.otf</file>
+    </qresource>
+</RCC>

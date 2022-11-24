@@ -38,14 +38,14 @@
 // TODO: check for settings then save them
 // TODO: make a thing saying controller disconnected
 // TODO: real controller selector should start from 1 maybe and also list selector too maybe
-// TODO: change the settings manager to enums instead of strings
+//// TODO: change the settings manager to enums instead of strings
 // TODO: by default the path says {username}. make it so that the {username} gets auto replaced with actual username
 // TODO: to see if the layout is a dolphin controler config one, check and make sure the layout has a {port} thing in it
 // TODO: this needs to be done bc program will crash if it doesnt
 // TODO: fix case where it cannot find the text it is lookign for bc its not htere when launching which causes infinite loop
 // TODO: port number needs to be replaced multiple times sometimes
 // TODO: make a do not write config
-// TODO: FOOOOONNNTTTT
+//// TODO: FOOOOONNNTTTT
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -127,6 +127,10 @@ public:
             delete this;
             return;
         }
+
+
+        QFontDatabase::addApplicationFont(":/fonts/Cantarell-VF.otf");
+
 
 
 
@@ -368,7 +372,6 @@ public:
         break;
         case 0:
             {
-                qDebug() << args;
                 bool found = false;
                 for (int i = 0; i < args.length(); i++) {
                     if (args.at(i) == "--batch" || args.at(i) == "-b") {
@@ -381,7 +384,6 @@ public:
                     args.append("--batch");
                     ui->DolphinConfigWIndowSelection->setText(arrowAdder("Disabled"));
                 }
-                qDebug() << args;
             }
 
             break;
@@ -393,7 +395,6 @@ public:
         case 2: /* Real Controllers*/
             realControllerSelector.modifySelection(direction);
             setRealController(settingsManager.getKeys("RealControllers").at(realControllerSelector.getSelection())); // update real controller
-            qDebug() << "\n";
 
             if (settingsManager.getKeys("RealControllers").value(realControllerSelector.getSelection()) == "gc") {
                 setEmulatedControllerWithoutArrows(0);
@@ -428,9 +429,37 @@ public:
             const QStringList suffixes = settingsManager.getKeys("ProfileSuffixes");
 
             for (const QString &suffix: suffixes) {
-                for (const QFileInfo &file: possibleFiles) {
-                    if (file.baseName().startsWith(previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "RealController")) && file.baseName().endsWith(suffix)) {
-                        usableProfiles.append(file);
+                for (const QFileInfo &fileInfo: possibleFiles) {
+                    if (fileInfo.baseName().startsWith(previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "RealController")) && fileInfo.baseName().endsWith(suffix)) {
+                        QFile file(fileInfo.filePath());
+
+                        if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
+                                QMessageBox::warning(this, tr("Warning"), tr("Unable to open file : ") + file.errorString() +
+                                                     "The file path is: " + fileInfo.filePath() +
+                                                     "Make sure your paths are configured incorrectly. "
+                                                     "For more information, please read README.md or see "
+                                                     "https://github.com/Anti-Shulk/DolphinControllerConfig");
+                                QApplication::quit();
+                                delete this;
+                                return;
+                        }
+
+                        QTextStream stream(&file);
+                        stream.seek(0);
+
+                        QString line;
+                        bool isValid = false;
+                        // go through the original stream and replace the text with the text that is being requested to be replaced
+                        while (!stream.atEnd()) {
+                            line = stream.readLine();
+                            if (line.contains("{PortNumber")) { // If it contains the text we want to replace
+                                isValid = true;
+                            }
+                        }
+                        if (isValid) {
+                            usableProfiles.append(fileInfo);
+                        }
+                        file.close();
                     }
                 }
             }
@@ -491,9 +520,9 @@ public:
 
 
 
-                // Replace {portNumber} with the port number in our new config file
+                // Replace {PortNumber} with the port number in our new config file
                 gcPad.replaceFileText(
-                            "{portNumber}", // to replace
+                            "{PortNumber}", // to replace
                             QString::number(previousConfigManager.getPlayerConfig(playerNumber, "Port").toInt() - 1) // to replpace with
                             );
 
@@ -502,7 +531,6 @@ public:
                             "SIDevice" + QString::number(playerNumber-1), // replaace text containing SIDevice of our port number
                             "SIDevice" + QString::number(playerNumber-1) + " = " + QString::number(previousConfigManager.getPlayerConfig(playerNumber, "Profile") == "realgc" ? 12: 6) // set the device to 12 if its a realgc or 6 if its emulated
                             );
-//                qDebug() << "hey";
 
 
 
@@ -533,9 +561,9 @@ public:
                                                      previousConfigManager.getPlayerConfig(playerNumber, "Profile") + ".ini").remove("[Profile]\n") // Replace with whatever profile name our previous configuration has selected
                             );
 
-                // Replace {portNumber} with the port number in our new config file
+                // Replace {PortNumber} with the port number in our new config file
                 wiiMote.replaceFileText(
-                            "{portNumber}", // to replace
+                            "{PortNumber}", // to replace
                             QString::number(previousConfigManager.getPlayerConfig(playerNumber, "Port").toInt() - 1) // to replpace with
                             );
 
