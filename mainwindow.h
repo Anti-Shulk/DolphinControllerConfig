@@ -30,7 +30,7 @@
 // TODO: clean comments
 // TODO: clean code
 // TODO: make releases executables
-// TODO: make controller profiles
+//// TODO: make controller profiles
 // TODO: make an option for none in controller select
 // TODO: fix weird behavior especially whrn switching players
 // TODO: seperate some stuff out into multiple files
@@ -120,14 +120,23 @@ public:
 
     MainWindow(QStringList args, QWidget *parent = nullptr) : QMainWindow(parent) , ui(new Ui::MainWindow), args(args)
     {
-//        qDebug() << args.at(2);
-//        qDebug() << args.at(3);
+        if (settingsManager.getSetting("Setup", "setup") == "") {
+            QMessageBox::warning(this, tr("Warning"), tr("DolphinControllerConfigurator has not been setup. Please read README.md. "
+                                                         "For more information see https://github.com/Anti-Shulk/DolphinControllerConfig"));
+            QApplication::quit();
+            delete this;
+            return;
+        }
+
+
+
         ui->setupUi(this);
 
         this->showFullScreen();
 
         // create gamepad
 
+        qDebug() << QGamepadManager::instance()->isGamepadConnected(0);
         gamepad = new QGamepad(QGamepadManager::instance()->connectedGamepads().at(0), this); // this crashes on debug builds
 
         connect(gamepad, &QGamepad::buttonAChanged, this, &MainWindow::launchPressedCheck);
@@ -180,30 +189,31 @@ public:
         loadCurrentPlayerConfig();
 
 
+
         bool found = false;
         for (int i = 0; i < args.length(); i++) {
             if (args.at(i) == "--batch" || args.at(i) == "-b") {
                 found = true;
+                ui->DolphinConfigWIndowSelection->setText(arrowAdder("Disabled"));
             }
         }
-        if (!found) {
-            args.append("--batch");
-        }
 
-        ui->DolphinConfigWIndowSelection->setText(arrowAdder("Disabled"));
+        if (!found) {
+            ui->DolphinConfigWIndowSelection->setText(arrowAdder("Enabled"));
+        }
     }
 
     ~MainWindow()
     {
-        delete ui;
-
-        delete gamepad;
         delete up;
         delete down;
         delete left;
         delete right;
         delete enter;
+        delete gamepad;
+        delete ui;
     }
+
 
 
     void resetControllerProfiles()
@@ -214,12 +224,22 @@ public:
         QTextStream dolphinGCPadNewSettingsStream(&dolphinGCPadNewSettings);
 
         if (!dolphinWiimoteNewSettings.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            QMessageBox::warning(this, tr("Warning"), tr("Unable to open or write to dolphin configuration files: ") + dolphinWiimoteNewSettings.errorString());
+            QMessageBox::warning(this, tr("Warning"), tr("Unable to open Dolphin Emulator's WiimoteNew.ini. Make sure your paths are configured incorrectly. "
+                                                         "For more information, please read README.md or see "
+                                                         "https://github.com/Anti-Shulk/DolphinControllerConfig"
+                                                         "Error: ") + dolphinWiimoteNewSettings.errorString());
+            QApplication::quit();
+            delete this;
             return;
         }
 
         if (!dolphinGCPadNewSettings.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            QMessageBox::warning(this, tr("Warning"), tr("Unable to open or write to dolphin configuration files: ") + dolphinGCPadNewSettings.errorString());
+            QMessageBox::warning(this, tr("Warning"), tr("Unable to open Dolphin Emulator's GCPadNew.ini. Make sure your paths are configured incorrectly. "
+                                                         "For more information, please read README.md or see "
+                                                         "https://github.com/Anti-Shulk/DolphinControllerConfig"
+                                                         "Error: ") + dolphinGCPadNewSettings.errorString());
+            QApplication::quit();
+            delete this;
             return;
         }
 
@@ -364,6 +384,7 @@ public:
         break;
         case 0:
             {
+                qDebug() << args;
                 bool found = false;
                 for (int i = 0; i < args.length(); i++) {
                     if (args.at(i) == "--batch" || args.at(i) == "-b") {
@@ -376,6 +397,7 @@ public:
                     args.append("--batch");
                     ui->DolphinConfigWIndowSelection->setText(arrowAdder("Disabled"));
                 }
+                qDebug() << args;
             }
 
             break;
@@ -545,7 +567,14 @@ public:
         }
 
 //            QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), QStringList("--exec=C:/Users/Justi/Documents/Games/Console/Nintendo GameCube/Super Smash Bros. Melee (USA).iso"));
-        QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), args);
+        if (!QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), args)) {
+            QMessageBox::warning(this, tr("Warning"), tr("Dolphin.exe not found. Make sure your paths are configured incorrectly. "
+                                                         "For more information, please read README.md or see "
+                                                         "https://github.com/Anti-Shulk/DolphinControllerConfig"));
+            QApplication::quit();
+            delete this;
+            return;
+        }
         QThread::sleep(5);
         QApplication::quit();
     }

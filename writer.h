@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QDebug>
+#include <QApplication>
 
 class Writer {
 public:
@@ -28,12 +29,24 @@ public:
         tempFile(filePath + ".tmp")
     {
         if (!originalFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
-                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + originalFile.errorString());
+                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + originalFile.errorString() +
+                                     "The file path is: " + filePath +
+                                     "Make sure your paths are configured incorrectly. "
+                                     "For more information, please read README.md or see "
+                                     "https://github.com/Anti-Shulk/DolphinControllerConfig");
+                QApplication::quit();
+                delete parent;
                 return;
         }
 
         if (!tempFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
-                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to create temporary file: ") + tempFile.errorString());
+                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to create temporary file: ") + tempFile.errorString() +
+                                     "The file path of the original file is: " + filePath +
+                                     "Make sure your paths are configured incorrectly. "
+                                     "For more information, please read README.md or see "
+                                     "https://github.com/Anti-Shulk/DolphinControllerConfig");
+                QApplication::quit();
+                delete parent;
                 return;
         }
     }
@@ -142,7 +155,11 @@ public:
         QFile file(filePath);
 
         if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
-                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + file.errorString());
+                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + file.errorString() +
+                                     "The file path is: " + filePath +
+                                     "Make sure your paths are configured incorrectly. "
+                                     "For more information, please read README.md or see "
+                                     "https://github.com/Anti-Shulk/DolphinControllerConfig");
                 return nullptr;
         }
 
