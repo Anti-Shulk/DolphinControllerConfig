@@ -120,9 +120,6 @@ public:
 
     MainWindow(QStringList args, QWidget *parent = nullptr) : QMainWindow(parent) , ui(new Ui::MainWindow), args(args)
     {
-        qDebug() << "hey";
-        qDebug() << args.at(0);
-        qDebug() << args.at(1);
 //        qDebug() << args.at(2);
 //        qDebug() << args.at(3);
         ui->setupUi(this);
@@ -130,8 +127,6 @@ public:
         this->showFullScreen();
 
         // create gamepad
-
-        qDebug() << "hey";
 
         gamepad = new QGamepad(QGamepadManager::instance()->connectedGamepads().at(0), this); // this crashes on debug builds
 
@@ -142,7 +137,6 @@ public:
         connect(gamepad, &QGamepad::buttonRightChanged, this, &::MainWindow::rightPresssedCheck);
 
         ui->ControllerStatusSelection->setText("Connected");
-        qDebug() << "hey";
 
 //        if (QGamepadManager::instance()->isGamepadConnected(0)) // this doesnt work
 //        {
@@ -171,8 +165,6 @@ public:
         QObject::connect(right, &QShortcut::activated, this, &MainWindow::rightPressed);
         QObject::connect(enter, &QShortcut::activated, this, &MainWindow::launchPressed);
 
-        qDebug() << "hey";
-
 
 
 
@@ -198,11 +190,7 @@ public:
             args.append("--batch");
         }
 
-        qDebug() << "hey";
-
         ui->DolphinConfigWIndowSelection->setText(arrowAdder("Disabled"));
-
-        qDebug() << "hey";
     }
 
     ~MainWindow()
