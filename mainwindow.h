@@ -135,8 +135,6 @@ public:
         this->showFullScreen();
 
         // create gamepad
-
-        qDebug() << QGamepadManager::instance()->isGamepadConnected(0);
         gamepad = new QGamepad(QGamepadManager::instance()->connectedGamepads().at(0), this); // this crashes on debug builds
 
         connect(gamepad, &QGamepad::buttonAChanged, this, &MainWindow::launchPressedCheck);
@@ -144,20 +142,6 @@ public:
         connect(gamepad, &QGamepad::buttonDownChanged, this, &MainWindow::downPressedCheck);
         connect(gamepad, &QGamepad::buttonLeftChanged, this, &MainWindow::leftPressedCheck);
         connect(gamepad, &QGamepad::buttonRightChanged, this, &::MainWindow::rightPresssedCheck);
-
-        ui->ControllerStatusSelection->setText("Connected");
-
-//        if (QGamepadManager::instance()->isGamepadConnected(0)) // this doesnt work
-//        {
-
-
-
-//        }
-//        else
-//        {
-//            ui->ControllerStatusSelection->setText("Disconnected");
-//            // say no gamepad is connected
-//        }
 
 
         // create shortcuts for keyboard

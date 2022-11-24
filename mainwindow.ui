@@ -34,7 +34,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>610</y>
+      <y>580</y>
       <width>851</width>
       <height>61</height>
      </rect>
@@ -120,7 +120,7 @@ background-color: rgb(48, 48, 48);</string>
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>430</y>
+      <y>400</y>
       <width>851</width>
       <height>61</height>
      </rect>
@@ -203,7 +203,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>670</y>
+      <y>640</y>
       <width>851</width>
       <height>61</height>
      </rect>
@@ -289,7 +289,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>490</y>
+      <y>460</y>
       <width>851</width>
       <height>61</height>
      </rect>
@@ -372,7 +372,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>730</y>
+      <y>700</y>
       <width>851</width>
       <height>61</height>
      </rect>
@@ -436,7 +436,7 @@ background-color: rgb(48, 48, 48);</string>
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>550</y>
+      <y>520</y>
       <width>851</width>
       <height>61</height>
      </rect>
@@ -518,94 +518,11 @@ background-color: rgb(48, 48, 48);</string>
      </layout>
     </widget>
    </widget>
-   <widget class="QFrame" name="ControllerStatusFrame">
-    <property name="geometry">
-     <rect>
-      <x>530</x>
-      <y>310</y>
-      <width>851</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(48, 48, 48);
-color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::NoFrame</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Plain</enum>
-    </property>
-    <property name="lineWidth">
-     <number>3</number>
-    </property>
-    <widget class="QWidget" name="horizontalLayoutWidget_10">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>831</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_11">
-      <item>
-       <widget class="QLabel" name="ControllerStatusLabel">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Cantarell Extra Bold</family>
-          <pointsize>14</pointsize>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Controller Status:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="ControllerStatusSelection">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Cantarell</family>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Disconnected</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </widget>
    <widget class="QFrame" name="DolphinConfigWindowFrame">
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>370</y>
+      <y>340</y>
       <width>851</width>
       <height>61</height>
      </rect>
@@ -674,7 +591,7 @@ color: rgb(255, 255, 255);</string>
          </font>
         </property>
         <property name="text">
-         <string>⯇ Disabled ⯈</string>
+         <string>⯇  ⯈</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
