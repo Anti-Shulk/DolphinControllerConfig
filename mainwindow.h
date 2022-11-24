@@ -63,9 +63,9 @@ private:
             .build();
 
     Selector listSelector = SelectorBuilder() // This is the selector for the up and down movement
-            .setInitalValue(5)
+            .setInitalValue(6)
             .setMinValue(0)
-            .setMaxValue(5)
+            .setMaxValue(6)
             .setIsLooping(false)
             .build();
 
@@ -120,6 +120,7 @@ public:
 
     MainWindow(QStringList args, QWidget *parent = nullptr) : QMainWindow(parent) , ui(new Ui::MainWindow), args(args)
     {
+        qDebug() << "hey";
         qDebug() << args.at(0);
         qDebug() << args.at(1);
 //        qDebug() << args.at(2);
@@ -130,6 +131,8 @@ public:
 
         // create gamepad
 
+        qDebug() << "hey";
+
         gamepad = new QGamepad(QGamepadManager::instance()->connectedGamepads().at(0), this); // this crashes on debug builds
 
         connect(gamepad, &QGamepad::buttonAChanged, this, &MainWindow::launchPressedCheck);
@@ -139,6 +142,7 @@ public:
         connect(gamepad, &QGamepad::buttonRightChanged, this, &::MainWindow::rightPresssedCheck);
 
         ui->ControllerStatusSelection->setText("Connected");
+        qDebug() << "hey";
 
 //        if (QGamepadManager::instance()->isGamepadConnected(0)) // this doesnt work
 //        {
@@ -167,19 +171,38 @@ public:
         QObject::connect(right, &QShortcut::activated, this, &MainWindow::rightPressed);
         QObject::connect(enter, &QShortcut::activated, this, &MainWindow::launchPressed);
 
+        qDebug() << "hey";
 
 
 
 
-        menuItems.initalize(std::initializer_list<QFrame*>{ui->PlayerFrame, ui->RealControllerFrame, ui->PortFrame, ui->EmulatedControllerFrame, ui->ProfileFrame, ui->LaunchFrame});
 
-        menuItems.setSelectedFrame(5);
+        menuItems.initalize(std::initializer_list<QFrame*>{ui->DolphinConfigWindowFrame, ui->PlayerFrame, ui->RealControllerFrame, ui->PortFrame, ui->EmulatedControllerFrame, ui->ProfileFrame, ui->LaunchFrame});
+
+        menuItems.setSelectedFrame(6);
 
 
         // This line basically says how many real contorllers we have so we know how long to make the real contorller list
         realControllerSelector.setMaxValue(settingsManager.getKeys("RealControllers").length() - 1); // we do -1 becuase we count our array starting from 0 meaning that if there are 4 keys, 3 would be the max value
 
         loadCurrentPlayerConfig();
+
+
+        bool found = false;
+        for (int i = 0; i < args.length(); i++) {
+            if (args.at(i) == "--batch" || args.at(i) == "-b") {
+                found = true;
+            }
+        }
+        if (!found) {
+            args.append("--batch");
+        }
+
+        qDebug() << "hey";
+
+        ui->DolphinConfigWIndowSelection->setText(arrowAdder("Disabled"));
+
+        qDebug() << "hey";
     }
 
     ~MainWindow()
@@ -351,12 +374,29 @@ public:
         switch (listLevel) { // Which up/down level are we on?
         default:
         break;
-        case 0: /* Players */
+        case 0:
+            {
+                bool found = false;
+                for (int i = 0; i < args.length(); i++) {
+                    if (args.at(i) == "--batch" || args.at(i) == "-b") {
+                        found = true;
+                        args.removeAt(i);
+                        ui->DolphinConfigWIndowSelection->setText(arrowAdder("Enabled"));
+                    }
+                }
+                if (!found) {
+                    args.append("--batch");
+                    ui->DolphinConfigWIndowSelection->setText(arrowAdder("Disabled"));
+                }
+            }
+
+            break;
+        case 1: /* Players */
             playerSelector.modifySelection(direction); // update player selector
             setPlayerNumber(); // update ui
             loadCurrentPlayerConfig(); // update all other ui elements
         break;
-        case 1: /* Real Controllers*/
+        case 2: /* Real Controllers*/
             realControllerSelector.modifySelection(direction);
             setRealController(settingsManager.getKeys("RealControllers").at(realControllerSelector.getSelection())); // update real controller
             qDebug() << "\n";
@@ -372,19 +412,19 @@ public:
             }
             ui->EmulatedControllerSelection->setText(arrowAdder(" "));
             ui->ProfileSelectoin->setText(arrowAdder(" "));
-            selectionAction(Selector::Increase, 3);
+            selectionAction(Selector::Increase, 4);
         break;
-        case 2: /* Ports */
+        case 3: /* Ports */
             portSelector.modifySelection(direction); // loops
             setCurrentPort();
         break;
-        case 3: /* Emulated Controllers */
+        case 4: /* Emulated Controllers */
             if (isRealController()) break;
             emulatedControllerSelector.modifySelection(direction); //loops
             setCurrentEmulatedController();
-            selectionAction(Selector::Increase, 4);
+            selectionAction(Selector::Increase, 5);
         break;
-        case 4:
+        case 5:
             QDir dir;
             QFileInfoList usableProfiles;
             if (previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "EmulatedController") == "gc") dir = QDir(settingsManager.getSetting("Paths", "dolphinconfigpath") + "/Profiles" + "/GCPad");
@@ -532,7 +572,7 @@ private slots:
     }
     void launchPressed()
     {
-        if (listSelector.getSelection() != 5) return;
+        if (listSelector.getSelection() != 6) return;
         launch();
     }
 

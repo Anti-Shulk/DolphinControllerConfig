@@ -30,10 +30,10 @@ public:
         }
     }
 
-    void setSelectedFrame(int frameNumber)
+    void setSelectedFrame(unsigned int frameNumber)
     {
         initalizationCheck();
-        for (int i = 0; i < 6; ++i) {
+        for (unsigned int i = 0; i < frames.size(); ++i) {
             if (i == frameNumber) setAsSelected(frames[i]);
             else setAsDeselected(frames[i]);
         }
