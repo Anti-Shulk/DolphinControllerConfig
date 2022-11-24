@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/fonts">
-        <file alias="Cantarell">Cantarell-VF.otf</file>
+        <file alias="Exo 2 Condensed">Exo2-BoldCondensed.otf</file>
+        <file alias="Exo 2 Semi Bold Condensed">Exo2-SemiBoldCondensed.otf</file>
     </qresource>
 </RCC>

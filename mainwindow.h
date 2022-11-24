@@ -45,7 +45,7 @@
 // TODO: fix case where it cannot find the text it is lookign for bc its not htere when launching which causes infinite loop
 // TODO: port number needs to be replaced multiple times sometimes
 // TODO: make a do not write config
-//// TODO: FOOOOONNNTTTT
+// TODO: FOOOOONNNTTTT
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -127,10 +127,6 @@ public:
             delete this;
             return;
         }
-
-
-        QFontDatabase::addApplicationFont(":/fonts/Cantarell-VF.otf");
-
 
 
 

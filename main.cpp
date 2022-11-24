@@ -14,6 +14,11 @@ int main(int argc, char *argv[])
         args.append(argv[i]);
     }
 
+    QFontDatabase::addApplicationFont(":/fonts/Exo 2 Condensed");
+
+    QFontDatabase::addApplicationFont(":/fonts/Exo 2 Semi Bold Condensed");
+
+
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {
