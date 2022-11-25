@@ -125,6 +125,8 @@ public:
             settingsManager.setSetting("Setup", "setup", "false");
             settingsManager.setSetting("RealControllers", "ex", "Example Controller");
             settingsManager.setSetting("ProfileSuffixes", "examplesuffix", "with example suffix");
+            settingsManager.setSetting("Paths", "dolphinconfigpath", "[Enter Dophin Config Path]");
+            settingsManager.setSetting("Paths", "dolphinpath", "[Enter Path to launch Dolphin]");
             QMessageBox::warning(this, tr("Warning"), tr("DolphinControllerConfigurator has not been setup. Please read README.md. "
                                                          "For more information see https://github.com/Anti-Shulk/DolphinControllerConfig"));
             QApplication::quit();
