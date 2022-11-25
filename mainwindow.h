@@ -39,7 +39,7 @@
 // TODO: make a thing saying controller disconnected
 // TODO: real controller selector should start from 1 maybe and also list selector too maybe
 //// TODO: change the settings manager to enums instead of strings
-//// rename exe file
+// rename exe file
 // TODO: by default the path says {username}. make it so that the {username} gets auto replaced with actual username
 // TODO: to see if the layout is a dolphin controler config one, check and make sure the layout has a {port} thing in it
 // TODO: this needs to be done bc program will crash if it doesnt
@@ -77,9 +77,9 @@ private:
             .build();
 
     Selector portSelector = SelectorBuilder() // This is the selector for real controllers. We do not know how many controllers there are
-            .setInitalValue(1)
-            .setMinValue(1)
-            .setMaxValue(4)
+            .setInitalValue(0)
+            .setMinValue(0)
+            .setMaxValue(3)
             .setIsLooping(true)
             .build();
 
@@ -612,7 +612,7 @@ public:
                 // Replace {PortNumber} with the port number in our new config file
                 gcPad.replaceFileText(
                             "{PortNumber}", // to replace
-                            QString::number(previousConfigManager.getPlayerConfig(playerNumber, "Port").toInt() - 1) // to replpace with
+                            QString::number(previousConfigManager.getPlayerConfig(playerNumber, "Port").toInt()) // to replpace with
                             );
 
                 // Edit SIDevice in dolphin config file
@@ -653,7 +653,7 @@ public:
                 // Replace {PortNumber} with the port number in our new config file
                 wiiMote.replaceFileText(
                             "{PortNumber}", // to replace
-                            QString::number(previousConfigManager.getPlayerConfig(playerNumber, "Port").toInt() - 1) // to replpace with
+                            QString::number(previousConfigManager.getPlayerConfig(playerNumber, "Port").toInt()) // to replpace with
                             );
 
                 // Edit Wiimote to use real wiimote if its real or not
