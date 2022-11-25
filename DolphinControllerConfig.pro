@@ -23,8 +23,6 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
-TRANSLATIONS += \
-    dolphinqt5_en_US.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 
