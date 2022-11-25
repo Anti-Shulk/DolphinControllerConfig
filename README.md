@@ -67,6 +67,7 @@ These can be used as the suffix for a profiles when combined with a real control
 As mentioned earlier, profiles are located in the dolphinconfigpath/Profiles/Wiimote and dolphinconfigpath/Profiles/GCPad directories. These can be edited manually, or using Dolphin in the Controllers Menu.
 ##### Dolphin example
 ![](https://i.imgur.com/NRmxym0.png)
+
 When creating a profile in Dolphin, type in a name, and click save to store the profile in the Wiimote directory for Wiimotes or GCPad directory for GameCube Controllers. 
 **There is another additional step that must be taken for profiles to show up**
 Profiles must be manually edited to say "{PortNumber}"" in the location of the port number. 
