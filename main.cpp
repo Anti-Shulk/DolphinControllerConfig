@@ -3,11 +3,15 @@
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
+#include <QDesktopWidget>
 
 int main(int argc, char *argv[])
 {
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QApplication a(argc, argv);
+
+    QApplication app(argc, argv);
+    double scaleFactor = (app.desktop()->logicalDpiX()/96.0)*100.0;
+    int height = QApplication::desktop()->height();
+    int width = QApplication::desktop()->width();
 
     QStringList args;
     for (int i = 1; i < argc; i++) {
@@ -24,11 +28,11 @@ int main(int argc, char *argv[])
     for (const QString &locale : uiLanguages) {
         const QString baseName = "dolphinqt5_" + QLocale(locale).name();
         if (translator.load(":/i18n/" + baseName)) {
-            a.installTranslator(&translator);
+            app.installTranslator(&translator);
             break;
         }
     }
-    MainWindow w(args);
-    w.show();
-    return a.exec();
+    MainWindow window(scaleFactor, height, width, args);
+    window.show();
+    return app.exec();
 }

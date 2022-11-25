@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -53,20 +53,20 @@ background-color: rgb(48, 48, 48);</string>
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QWidget" name="horizontalLayoutWidget_5">
+    <widget class="QWidget" name="EmulatedControllerWidget" native="true">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>831</width>
-       <height>41</height>
+       <height>61</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <layout class="QHBoxLayout" name="EmulatedControllerLayout">
       <item>
        <widget class="QLabel" name="EmulatedControllerLabel">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -140,20 +140,20 @@ color: rgb(255, 255, 255);</string>
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QWidget" name="horizontalLayoutWidget_3">
+    <widget class="QWidget" name="PlayerWidget" native="true">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>831</width>
-       <height>41</height>
+       <height>61</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QHBoxLayout" name="PlayerLayout">
       <item>
        <widget class="QLabel" name="PlayerLabel">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -192,7 +192,7 @@ color: rgb(255, 255, 255);</string>
          </font>
         </property>
         <property name="text">
-         <string>⯇ Player 1 ⯈</string>
+         <string>⯇  ⯈</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -224,20 +224,20 @@ color: rgb(255, 255, 255);</string>
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QWidget" name="horizontalLayoutWidget_6">
+    <widget class="QWidget" name="ProfileWidget" native="true">
      <property name="geometry">
       <rect>
-       <x>8</x>
-       <y>8</y>
+       <x>10</x>
+       <y>0</y>
        <width>831</width>
-       <height>41</height>
+       <height>61</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_7">
+     <layout class="QHBoxLayout" name="ProfileLayout">
       <item>
        <widget class="QLabel" name="ProfileLabel">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -311,20 +311,20 @@ color: rgb(255, 255, 255);</string>
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QWidget" name="horizontalLayoutWidget_4">
+    <widget class="QWidget" name="RealControllerWidget" native="true">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>831</width>
-       <height>41</height>
+       <height>61</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <layout class="QHBoxLayout" name="RealControllerLayout">
       <item>
        <widget class="QLabel" name="RealControllerLabel">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -395,20 +395,20 @@ background-color: rgb(48, 48, 48);</string>
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QWidget" name="horizontalLayoutWidget_7">
+    <widget class="QWidget" name="LaunchWidget" native="true">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>831</width>
-       <height>41</height>
+       <height>61</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_8">
+     <layout class="QHBoxLayout" name="LaunchLayout">
       <item>
        <widget class="QLabel" name="LaunchLabel">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -459,20 +459,20 @@ background-color: rgb(48, 48, 48);</string>
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QWidget" name="horizontalLayoutWidget_8">
+    <widget class="QWidget" name="PortWidget" native="true">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>831</width>
-       <height>41</height>
+       <height>61</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_9">
+     <layout class="QHBoxLayout" name="PortLayout">
       <item>
        <widget class="QLabel" name="PortLabel">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -546,20 +546,29 @@ color: rgb(255, 255, 255);</string>
     <property name="lineWidth">
      <number>3</number>
     </property>
-    <widget class="QWidget" name="horizontalLayoutWidget_12">
+    <widget class="QWidget" name="DolphinConfigWindowWidget" native="true">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>831</width>
-       <height>41</height>
+       <height>61</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_13">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QHBoxLayout" name="DolphinConfigWindowLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
       <item>
        <widget class="QLabel" name="DolphinConfigWindowLabel">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -584,6 +593,15 @@ color: rgb(255, 255, 255);</string>
       </item>
       <item>
        <widget class="QLabel" name="DolphinConfigWIndowSelection">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
           <width>0</width>

@@ -119,7 +119,7 @@ private:
 public:
 
 
-    MainWindow(QStringList args, QWidget *parent = nullptr) : QMainWindow(parent) , ui(new Ui::MainWindow), args(args)
+    MainWindow(double scaleFactor, int height, int width, QStringList args, QWidget *parent = nullptr) : QMainWindow(parent) , ui(new Ui::MainWindow), args(args)
     {
         if (settingsManager.getSetting("Setup", "setup") != "true") {
             settingsManager.setSetting("Setup", "setup", "false");
@@ -137,6 +137,95 @@ public:
         ui->setupUi(this);
 
         this->showFullScreen();
+
+
+        /* Scaling code */
+        int labelFontSize = 18;
+        int selectionFontSize = 16;
+        double widthScale = width/1920.0;
+        double heightScale = height/1080.0;
+
+        if (width / height < 1) { // if monitor is taller than wide
+            labelFontSize = 18.0 * (100.0 / scaleFactor) * widthScale;
+            selectionFontSize = 16.0 * (100.0 / scaleFactor) * widthScale;
+        } else {
+            labelFontSize = 18.0 * (100.0 / scaleFactor) * heightScale;
+            selectionFontSize = 16.0 * (100.0 / scaleFactor) * heightScale;
+        }
+
+
+        QFrame* frames[] = {
+            ui->DolphinConfigWindowFrame,
+            ui->EmulatedControllerFrame,
+            ui->PlayerFrame,
+            ui->ProfileFrame,
+            ui->LaunchFrame,
+            ui->PortFrame,
+            ui->RealControllerFrame
+        };
+
+        for (QFrame* frame : frames) {
+            QRect originalGeometry = frame->geometry();
+            frame->setGeometry(
+                        originalGeometry.x() * widthScale,
+                        originalGeometry.y() * heightScale,
+                        originalGeometry.width() * widthScale,
+                        originalGeometry.height() * heightScale
+                        );
+        }
+
+        QWidget* Widgets[] = {
+            ui->DolphinConfigWindowWidget,
+            ui->PlayerWidget,
+            ui->EmulatedControllerWidget,
+            ui->RealControllerWidget,
+            ui->ProfileWidget,
+            ui->PortWidget,
+            ui->LaunchWidget
+        };
+
+        for (QWidget* widget : Widgets) {
+            QRect originalGeometry = widget->geometry();
+            widget->setGeometry(
+                        originalGeometry.x() * widthScale,
+                        originalGeometry.y() * heightScale,
+                        originalGeometry.width() * widthScale,
+                        originalGeometry.height() * heightScale
+                        );
+        }
+
+        QLabel* labels[] = {
+            ui->DolphinConfigWindowLabel,
+            ui->PlayerLabel,
+            ui->EmulatedControllerLabel,
+            ui->RealControllerLabel,
+            ui->ProfileLabel,
+            ui->PortLabel,
+            ui->LaunchLabel
+        };
+
+        for (QLabel* label : labels) {
+            label->setFont(QFont("Exo 2 Condensed", labelFontSize));
+        }
+
+
+        QLabel* selections[] = {
+            ui->DolphinConfigWIndowSelection,
+            ui->PlayerSelection,
+            ui->EmulatedControllerSelection,
+            ui->RealControllerSelection,
+            ui->ProfileSelectoin,
+            ui->PortSelection,
+        };
+
+        for (QLabel* selection : selections) {
+            selection->setFont(QFont("Exo 2 Condensed", selectionFontSize));
+        }
+
+        /* Scaling Code end */
+
+
+
 
         // create gamepad
         gamepad = new QGamepad(QGamepadManager::instance()->connectedGamepads().at(0), this); // this crashes on debug builds
