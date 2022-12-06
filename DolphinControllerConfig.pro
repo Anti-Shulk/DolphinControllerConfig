@@ -12,7 +12,6 @@ SOURCES += \
     main.cpp
 
 HEADERS += \
-    ConfigWriter.h \
     PreviousConfigurationManager.h \
     SettingsManager.h \
     mainwindow.h \
