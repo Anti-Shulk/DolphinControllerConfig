@@ -2,55 +2,41 @@
 #define MENUITEMS_H
 
 #include <QFrame>
-#include <QDebug>
 #include <initializer_list>
-#include <vector>
+#include <array>
 
-
+#include "ui_mainwindow.h"
 
 class MenuItems
 {
 private:
-    std::vector<QFrame*> frames;
-
-public:
-
-
-    void initalize(std::initializer_list<QFrame*> frames)
-    {
-        this->frames = frames;
-    }
-
-    void initalizationCheck()
-    {
-        if (frames.empty()) {
-            qDebug() << "Menu Items not initalized. Menu Items class must be initalized after ui setup.";
-            throw "uninitialized class";
-        }
-    }
-
-    void setSelectedFrame(unsigned int frameNumber)
-    {
-        initalizationCheck();
-        for (unsigned int i = 0; i < frames.size(); ++i) {
-            if (i == frameNumber) setAsSelected(frames[i]);
-            else setAsDeselected(frames[i]);
-        }
-    }
-
+    QFrame* frames[7];
     void setAsSelected(QFrame *frame)
     {
-        initalizationCheck();
         frame->setStyleSheet("color: rgb(48, 48, 48);"
                              "background-color: white");
     }
 
     void setAsDeselected(QFrame *frame)
     {
-        initalizationCheck();
         frame->setStyleSheet("color: white;"
                              "background-color: rgb(48, 48, 48)");
     }
+
+public:
+    MenuItems(Ui::MainWindow* ui)
+        : frames{ui->DolphinConfigWindowFrame, ui->PlayerFrame, ui->RealControllerFrame, ui->PortFrame, ui->EmulatedControllerFrame, ui->ProfileFrame, ui->LaunchFrame}
+    { }
+
+    void setSelectedFrame(unsigned int frameNumber)
+    {
+        for (unsigned int i = 0; i < std::size(frames); ++i) {
+            if (i == frameNumber) setAsSelected(frames[i]);
+            else setAsDeselected(frames[i]);
+        }
+    }
+
+
 };
 
 #endif // MENUITEMS_H

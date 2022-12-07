@@ -27,7 +27,6 @@ public:
         mode(mode),
         tempFile(filePath + ".tmp")
     {
-        qDebug() << filePath;
         if (!originalFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
                 QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + originalFile.errorString() +
                                      "The file path is: " + filePath +

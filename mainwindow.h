@@ -103,8 +103,8 @@ private:
     QString emulatedController{};
     QString controllerProfile{};
     bool isWiimote = false;
-    Ui::MainWindow *ui;
-    MenuItems menuItems;
+    std::unique_ptr<Ui::MainWindow> ui;
+    std::unique_ptr<MenuItems> menuItems;
     QFrame* frames[6];
     SettingsManager settingsManager;
     PreviousConfigurationManager previousConfigManager;
@@ -122,7 +122,10 @@ private:
 public:
 
 
-    MainWindow(double scaleFactor, int height, int width, QStringList args, QWidget *parent = nullptr) : QMainWindow(parent) , ui(new Ui::MainWindow), args(args)
+    MainWindow(double scaleFactor, int height, int width, QStringList args, QWidget *parent = nullptr)
+        : QMainWindow(parent),
+          ui(std::make_unique<Ui::MainWindow>()),
+          args(args)
     {
         if (settingsManager.getSetting("Setup", "setup") != "true") {
             settingsManager.setSetting("Setup", "setup", "false");
@@ -136,8 +139,6 @@ public:
             delete this;
             return;
         }
-
-
 
         ui->setupUi(this);
 
@@ -233,13 +234,16 @@ public:
 
 
         // create gamepad
-        gamepad = std::make_unique<QGamepad>(QGamepadManager::instance()->connectedGamepads().at(0), this); // this crashes on debug builds
+
+#ifndef QT_DEBUG // For some reason gamepad crashes on debug builds, so we just check to make sure this isn't a debug build
+        gamepad = std::make_unique<QGamepad>(QGamepadManager::instance()->connectedGamepads().at(0), this);
 
         connect(gamepad.get(), &QGamepad::buttonAChanged, this, &MainWindow::launchPressedCheck);
         connect(gamepad.get(), &QGamepad::buttonUpChanged, this, &MainWindow::upPressedCheck);
         connect(gamepad.get(), &QGamepad::buttonDownChanged, this, &MainWindow::downPressedCheck);
-        connect(gamepad.getIO, &QGamepad::buttonLeftChanged, this, &MainWindow::leftPressedCheck);
-        connect(gamepad, &QGamepad::buttonRightChanged, this, &::MainWindow::rightPresssedCheck);
+        connect(gamepad.get(), &QGamepad::buttonLeftChanged, this, &MainWindow::leftPressedCheck);
+        connect(gamepad.get(), &QGamepad::buttonRightChanged, this, &::MainWindow::rightPresssedCheck);
+#endif
 
 
         // create shortcuts for keyboard
@@ -250,19 +254,16 @@ public:
         enter = std::make_unique<QShortcut>(QKeySequence(Qt::Key_Space), this);
 
         // connect 'activated' signal of shortcuts to MainWindow functions
-        QObject::connect(down, &QShortcut::activated, this, &MainWindow::downPressed);
-        QObject::connect(up, &QShortcut::activated, this, &MainWindow::upPressed);
-        QObject::connect(left, &QShortcut::activated, this, &MainWindow::leftPressed);
-        QObject::connect(right, &QShortcut::activated, this, &MainWindow::rightPressed);
-        QObject::connect(enter, &QShortcut::activated, this, &MainWindow::launchPressed);
+        QObject::connect(down.get(), &QShortcut::activated, this, &MainWindow::downPressed);
+        QObject::connect(up.get(), &QShortcut::activated, this, &MainWindow::upPressed);
+        QObject::connect(left.get(), &QShortcut::activated, this, &MainWindow::leftPressed);
+        QObject::connect(right.get(), &QShortcut::activated, this, &MainWindow::rightPressed);
+        QObject::connect(enter.get(), &QShortcut::activated, this, &MainWindow::launchPressed);
 
 
+        menuItems = std::make_unique<MenuItems>(ui.get());
 
-
-
-        menuItems.initalize(std::initializer_list<QFrame*>{ui->DolphinConfigWindowFrame, ui->PlayerFrame, ui->RealControllerFrame, ui->PortFrame, ui->EmulatedControllerFrame, ui->ProfileFrame, ui->LaunchFrame});
-
-        menuItems.setSelectedFrame(6);
+        menuItems->setSelectedFrame(6);
 
 
         // This line basically says how many real contorllers we have so we know how long to make the real contorller list
@@ -283,17 +284,6 @@ public:
         if (!found) {
             ui->DolphinConfigWIndowSelection->setText(arrowAdder("Enabled"));
         }
-    }
-
-    ~MainWindow()
-    {
-        delete up;
-        delete down;
-        delete left;
-        delete right;
-        delete enter;
-        delete gamepad;
-        delete ui;
     }
 
 
@@ -432,6 +422,8 @@ public:
 
     void loadCurrentPlayerConfig()
     {
+        setPlayerNumber();
+
         setRealController(previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "RealController")); // update real controller
 
         setPort(previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "Port").toInt()); // update port
@@ -483,7 +475,6 @@ public:
             break;
         case 1: /* Players */
             playerSelector.modifySelection(direction); // update player selector
-            setPlayerNumber(); // update ui
             loadCurrentPlayerConfig(); // update all other ui elements
         break;
         case 2: /* Real Controllers*/
@@ -707,7 +698,7 @@ private slots:
     void upPressed()
     {
         listSelector.decreaseSelection(); // decrease the selector
-        menuItems.setSelectedFrame(listSelector.getSelection()); // update the visuals to match
+        menuItems->setSelectedFrame(listSelector.getSelection()); // update the visuals to match
     }
 
     void downPressedCheck(bool value)
@@ -718,7 +709,7 @@ private slots:
     void downPressed()
     {
         listSelector.increaseSelection(); // increase the selector
-        menuItems.setSelectedFrame(listSelector.getSelection()); // update the visuals to match
+        menuItems->setSelectedFrame(listSelector.getSelection()); // update the visuals to match
     }
 
     void leftPressedCheck(bool value)
