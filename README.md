@@ -161,7 +161,7 @@ The following are special button combinations
 | Minus (or equivalent) and Plus (or equivalent) | Presses Wiimote home button
 | Minus (or equivalent) and right button  | Toggle numchuck on or off - By defualt, the numchuck is on, but it can be "unplugged" with this button combination. Keep in mind that the Wiimote will stay vertical. When the numchuck is disabled, the wiimote dpad can be controlled using the left stick in addition to the real controller's dpad. |
 | Minus (or equivalent) and bottom button  | Toggle wiimote vertical/sideways - By default, the Wiimote is set to vertical, but it can be turned sideways which will change the button layout and dpad directions. When this is pressed, 1 becomes button button, 2 becomes right button, A becomes Left button, and B becomes button. |
-| Minus (or equivalent) and left button | Toggle motion controls (nspro/joy and ds4 only) - By default, motion controls are disabled, but if the DSU server is enabled and configured properly in BetterJoy or DS4 Windows, motion controls should be enabled including the IR/Wiimote cursor. This can be fun to mess around with. |
+| Minus (or equivalent) and R/R1 button | Toggle motion controls (nspro/joy and ds4 only) - By default, motion controls are disabled, but if the DSU server is enabled and configured properly in BetterJoy or DS4 Windows, motion controls should be enabled including the IR/Wiimote cursor. This can be fun to mess around with. |
 
 # Tips and Tricks
 #### Use Beta or Dev builds of Dolphin Emulator instead of Dolphin 5.0
