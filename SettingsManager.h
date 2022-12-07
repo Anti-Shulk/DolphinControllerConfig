@@ -19,21 +19,21 @@ private:
                 "DolphinControllerConfig",
                 "Settings"};
 public:
-    void setSetting(QString group, QString key, QString value)
+    void setSetting(const QString& group, const QString& key, const QString& value)
     {
         settings.beginGroup(group);
         settings.setValue(key, value);
         settings.endGroup();
     }
 
-    QString getSetting(QString group, QString key)
+    QString getSetting(const QString& group, const QString& key)
     {
         settings.beginGroup(group);
         QString value = settings.value(key).toString();
         settings.endGroup();
         return value;
     }
-    QStringList getKeys(QString group)
+    QStringList getKeys(const QString& group)
     {
         settings.beginGroup(group);
         QStringList value = settings.childKeys();

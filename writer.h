@@ -21,7 +21,7 @@ private:
 
 
 public:
-    Writer(QWidget* parent, Mode mode, QString filePath) :
+    Writer(QWidget* parent, Mode mode, const QString& filePath) :
         filePath(filePath),
         originalFile(filePath),
         mode(mode),
@@ -61,7 +61,7 @@ public:
         this->mode = mode;
     }
 
-    void replaceFileText(QString toBeReplaced, QString toReplaceWith)
+    void replaceFileText(const QString& toBeReplaced, const QString& toReplaceWith)
     {
         QTextStream originalFileStream(&originalFile);
         QTextStream tempFileStream(&tempFile);
@@ -103,7 +103,7 @@ public:
             originalFileStream << line + "\n";
         }
     }
-    void replaceFileTextAndSkipLines(QString skipStart, QString skipEnd, QString toReplaceWith) {
+    void replaceFileTextAndSkipLines(const QString& skipStart, const QString& skipEnd, const QString& toReplaceWith) {
 
         QTextStream originalFileStream(&originalFile);
         QTextStream tempFileStream(&tempFile);
@@ -148,7 +148,7 @@ public:
 };
 class FileReader {
 public:
-    static QString fileToString(QWidget* parent, QString filePath) // take a file and convert it to a stream with \n for each line also
+    static QString fileToString(QWidget* parent, const QString& filePath) // take a file and convert it to a stream with \n for each line also
     {
         QString contents;
         QFile file(filePath);

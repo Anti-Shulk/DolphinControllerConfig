@@ -11,13 +11,13 @@ class MenuItems
 {
 private:
     QFrame* frames[7];
-    void setAsSelected(QFrame *frame)
+    void setAsSelected(QFrame* frame)
     {
         frame->setStyleSheet("color: rgb(48, 48, 48);"
                              "background-color: white");
     }
 
-    void setAsDeselected(QFrame *frame)
+    void setAsDeselected(QFrame* frame)
     {
         frame->setStyleSheet("color: white;"
                              "background-color: rgb(48, 48, 48)");

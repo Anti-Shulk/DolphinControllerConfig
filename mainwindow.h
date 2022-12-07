@@ -368,7 +368,7 @@ public:
         }
     }
 
-    void setEmulatedController(QString selection)
+    void setEmulatedController(const QString& selection)
     {
         if (selection == "wii") setEmulatedController(1);
         else setEmulatedController(0);
@@ -393,7 +393,7 @@ public:
 
 
 
-    void setProfile(QString profile)
+    void setProfile(QString profile) // get by value instead of reference so we can remove part of the file vvv
     {
         previousConfigManager.setPlayerConfig(playerSelector.getSelection(), "Profile", profile);
 
@@ -402,7 +402,6 @@ public:
             return;
         }
 
-//        QString prefix = settingsManager.getSetting("RealControllers", previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "RealController"));
         QString suffix = settingsManager.getSetting("ProfileSuffixes", profile.remove(previousConfigManager.getPlayerConfig(playerSelector.getSelection(), "RealController")));
 
         ui->ProfileSelectoin->setText(arrowAdder(suffix));
