@@ -1,6 +1,6 @@
 #ifndef PREVIOUSCONFIGURATIONMANAGER_H
 #define PREVIOUSCONFIGURATIONMANAGER_H
-#pragma once
+
 #include <QSettings>
 
 class PreviousConfigurationManager {

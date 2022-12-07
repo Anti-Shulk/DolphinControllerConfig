@@ -1,11 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#pragma once
 
 #include <QMainWindow>
 #include <QGamepadManager>
 #include <QFrame>
-#include "ui_mainwindow.h"
 #include <QFile>
 #include <QMessageBox>
 #include <QFile>
@@ -15,14 +13,19 @@
 #include <QString>
 #include <QtGamepad>
 #include <QSettings>
+#include <QShortcut>
+#include <QThread>
+#include <memory>
+
+#include "ui_mainwindow.h"
+
 #include "selector.h"
 #include "menuitems.h"
 #include "QKeyEvent"
-#include <QShortcut>
 #include "writer.h"
 #include "SettingsManager.h"
 #include "PreviousConfigurationManager.h"
-#include <QThread>
+
 
 // TODO: for every value function, make a defualt value
 // TODO: dont modify if it wasnt modified by us
@@ -102,17 +105,17 @@ private:
     bool isWiimote = false;
     Ui::MainWindow *ui;
     MenuItems menuItems;
-    QFrame *frames[6];
+    QFrame* frames[6];
     SettingsManager settingsManager;
     PreviousConfigurationManager previousConfigManager;
 
-    QGamepad* gamepad;
+    std::unique_ptr<QGamepad>gamepad;
 
-    QShortcut* up;
-    QShortcut* down;
-    QShortcut* left;
-    QShortcut* right;
-    QShortcut* enter;
+    std::unique_ptr<QShortcut> up;
+    std::unique_ptr<QShortcut> down;
+    std::unique_ptr<QShortcut> left;
+    std::unique_ptr<QShortcut> right;
+    std::unique_ptr<QShortcut> enter;
     QStringList args;
 
 
@@ -230,21 +233,21 @@ public:
 
 
         // create gamepad
-        gamepad = new QGamepad(QGamepadManager::instance()->connectedGamepads().at(0), this); // this crashes on debug builds
+        gamepad = std::make_unique<QGamepad>(QGamepadManager::instance()->connectedGamepads().at(0), this); // this crashes on debug builds
 
-        connect(gamepad, &QGamepad::buttonAChanged, this, &MainWindow::launchPressedCheck);
-        connect(gamepad, &QGamepad::buttonUpChanged, this, &MainWindow::upPressedCheck);
-        connect(gamepad, &QGamepad::buttonDownChanged, this, &MainWindow::downPressedCheck);
-        connect(gamepad, &QGamepad::buttonLeftChanged, this, &MainWindow::leftPressedCheck);
+        connect(gamepad.get(), &QGamepad::buttonAChanged, this, &MainWindow::launchPressedCheck);
+        connect(gamepad.get(), &QGamepad::buttonUpChanged, this, &MainWindow::upPressedCheck);
+        connect(gamepad.get(), &QGamepad::buttonDownChanged, this, &MainWindow::downPressedCheck);
+        connect(gamepad.getIO, &QGamepad::buttonLeftChanged, this, &MainWindow::leftPressedCheck);
         connect(gamepad, &QGamepad::buttonRightChanged, this, &::MainWindow::rightPresssedCheck);
 
 
         // create shortcuts for keyboard
-        down = new QShortcut(QKeySequence(Qt::Key_Down), this);
-        up = new QShortcut(QKeySequence(Qt::Key_Up), this);
-        left = new QShortcut(QKeySequence(Qt::Key_Left), this);
-        right = new QShortcut(QKeySequence(Qt::Key_Right), this);
-        enter = new QShortcut(QKeySequence(Qt::Key_Space), this);
+        down = std::make_unique<QShortcut>(QKeySequence(Qt::Key_Down), this);
+        up = std::make_unique<QShortcut>(QKeySequence(Qt::Key_Up), this);
+        left = std::make_unique<QShortcut>(QKeySequence(Qt::Key_Left), this);
+        right = std::make_unique<QShortcut>(QKeySequence(Qt::Key_Right), this);
+        enter = std::make_unique<QShortcut>(QKeySequence(Qt::Key_Space), this);
 
         // connect 'activated' signal of shortcuts to MainWindow functions
         QObject::connect(down, &QShortcut::activated, this, &MainWindow::downPressed);

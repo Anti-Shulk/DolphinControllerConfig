@@ -1,7 +1,5 @@
 #ifndef SELECTOR_H
 #define SELECTOR_H
-#pragma once
-
 
 class Selector
 {

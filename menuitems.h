@@ -1,12 +1,11 @@
 #ifndef MENUITEMS_H
 #define MENUITEMS_H
-#pragma once
 
-#include "menuitems.h"
 #include <QFrame>
+#include <QDebug>
 #include <initializer_list>
 #include <vector>
-#include <QDebug>
+
 
 
 class MenuItems

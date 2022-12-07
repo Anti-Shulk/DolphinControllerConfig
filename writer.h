@@ -1,6 +1,6 @@
 #ifndef WRITER_H
 #define WRITER_H
-#pragma once
+
 #include <QString>
 #include <QFile>
 #include <QTextStream>
