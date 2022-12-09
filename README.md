@@ -23,17 +23,33 @@ examplesuffix=with example suffix
 dolphinconfigpath=[Enter Dophin Config Path]
 dolphinpath=[Enter Path to launch Dolphin]
 ```
-On Windows this is located at 
+#### On Windows, this is located at 
 `C:\Users\[Your Username]\AppData\Roaming\DolphinControllerConfig\Settings.ini`
+This directory can be accessed easier by typing `%appdata%` into the address bar of file explorer, then opening the `DolphinContollerConfig` directory and the settings.ini file which can be opened with notepad.
+#### On Mac, this is located at 
+`/users/[Your Username]/.config/DolphinControllerConfig\Settings.ini`
+This directory can be access by opening your home directory in finder by clicking `Go` at the top while finder is open then clicking home. After, you have to click `"Command" + "Shift" + "." (period)` to see hidden files and open the `.config` directory.
+
 Dolphin Controller Configurator will not lanuch into the main interface until `setup` is set to `true`. 
 #### Paths
-The `dolphinconfigpath` and `dolphinpath` are stored here. Usually on Windows, this is at 
+The `dolphinconfigpath` and `dolphinpath` are stored here. 
+##### On Windows, this is by default at
 `C:/Users/[Your Username]/Documents/Dolphin Emulator/Config`
-These paths must use double back slashes or forward slashes. Do not add a double back slash or forward slash to the end. Examples:
+You can find your username by seeing what shows up at the top when you view address bar after typing %appdata%, for example, when I do this, it says `C:\Users\Justi\AppData\Roaming`, meaning that `Justi` is my username
+
+##### On Mac, this is by default at 
+`/users/[Your Username]/Library/Application Support/Dolphin/Config`
+If you open your home directory (by clicking `Go` at the top while in finder), your username should show up in the address bar. For example it might say `justin`.
+
+These paths must use double back slashes or forward slashes (I reccoment using forward slashes). Do not add a double back slash or a forward slash to the end. Examples:
 `C:\\Users\\Justi\\Documents\\Dolphin Emulator\\Config`
 `C:/Users/Justi/Documents/Dolphin Emulator/Config`
-The `dolphinpath` is the path to the Dolphin Binary. On Windows, this should end in .exe. For example: 
+The `dolphinpath` is the path to the Dolphin Binary. 
+##### On Windows, this should end in .exe. For example: 
 `C:/Users/Justi/Documents/Dolphin-x64/Dolphin.exe`
+##### On Mac, this should end in .app. For example:
+`/Applications/Dolphin.app`
+Yours will most likely share this same path
 
 #### Real Controllers
 This setting stores all of the real controllers. More can be added by adding new lines. Here is an example:
