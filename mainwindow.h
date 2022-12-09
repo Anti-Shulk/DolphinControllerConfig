@@ -286,47 +286,6 @@ public:
         }
     }
 
-
-
-    void resetControllerProfiles()
-    {
-        QFile dolphinWiimoteNewSettings(settingsManager.getSetting("Paths", "dolphinconfigpath") + "/" + "WiimoteNew.ini");
-        QTextStream dolphinWiimoteNewSettingsStream(&dolphinWiimoteNewSettings);
-        QFile dolphinGCPadNewSettings(settingsManager.getSetting("Paths", "dolphinconfigpath") + "/" + "GCPadNew.ini");
-        QTextStream dolphinGCPadNewSettingsStream(&dolphinGCPadNewSettings);
-
-        if (!dolphinWiimoteNewSettings.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            QMessageBox::warning(this, tr("Warning"), tr("Unable to open Dolphin Emulator's WiimoteNew.ini. Make sure your paths are configured incorrectly. "
-                                                         "For more information, please read README.md or see "
-                                                         "https://github.com/Anti-Shulk/DolphinControllerConfig"
-                                                         "Error: ") + dolphinWiimoteNewSettings.errorString());
-            QApplication::quit();
-            delete this;
-            return;
-        }
-
-        if (!dolphinGCPadNewSettings.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            QMessageBox::warning(this, tr("Warning"), tr("Unable to open Dolphin Emulator's GCPadNew.ini. Make sure your paths are configured incorrectly. "
-                                                         "For more information, please read README.md or see "
-                                                         "https://github.com/Anti-Shulk/DolphinControllerConfig"
-                                                         "Error: ") + dolphinGCPadNewSettings.errorString());
-            QApplication::quit();
-            delete this;
-            return;
-        }
-
-        dolphinWiimoteNewSettingsStream << "[Wiimote1]\n\n" << "[Wiimote2]\n\n" << "[Wiimote3]\n\n" << "[Wiimote4]\n\n" << "[BalanceBoard]\n" << "Source = 0";
-        dolphinGCPadNewSettingsStream << "[GCPad1]\n\n" << "[GCPad2]\n\n" << "[GCPad3]\n\n" << "[GCPad4]\n\n";
-
-        dolphinWiimoteNewSettings.close();
-        dolphinGCPadNewSettings.close();
-
-
-    }
-
-
-
-
     QString arrowAdder(QString arrowlessString)
     {
         return "⯇ " + arrowlessString + " ⯈";
@@ -518,8 +477,8 @@ public:
                         QFile file(fileInfo.filePath());
 
                         if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
-                                QMessageBox::warning(this, tr("Warning"), tr("Unable to open file : ") + file.errorString() +
-                                                     "The file path is: " + fileInfo.filePath() +
+                                QMessageBox::warning(this, tr("Warning"), tr("Unable to open file : ") + file.errorString() + " "
+                                                     "The file path is: " + fileInfo.filePath() + ". "
                                                      "Make sure your paths are configured incorrectly. "
                                                      "For more information, please read README.md or see "
                                                      "https://github.com/Anti-Shulk/DolphinControllerConfig");
@@ -561,17 +520,35 @@ public:
         }
     }
 
-
     void launch()
     {
 
-        // In these two functions, we cannot use the standard QSettings to interface with the dolphin controller profiles
+        // In these functions, we cannot use the standard QSettings to interface with the dolphin controller profiles
         // becuase they do not allow spaces or forward slashes in file names easily. instead, I am using file text streams to put the text into the files.
-        resetControllerProfiles();
 
         Writer gcPad(this, Writer::REPLACE_TEXT_ONLY, settingsManager.getSetting("Paths", "dolphinconfigpath") + "/" + "GCPadNew.ini");
         Writer wiiMote(this, Writer::REPLACE_TEXT_ONLY, settingsManager.getSetting("Paths", "dolphinconfigpath") + "/" + "WiimoteNew.ini");
         Writer dolphinConf(this, Writer::REPLACE_FULL_LINE, settingsManager.getSetting("Paths", "dolphinconfigpath") + "/" + "Dolphin.ini");
+
+        gcPad.write("[GCPad1]\n"
+                    "\n"
+                    "[GCPad2]\n"
+                    "\n"
+                    "[GCPad3]\n"
+                    "\n"
+                    "[GCPad4]\n"
+                    "\n");
+        wiiMote.write(
+                    "[Wiimote1]\n"
+                    "\n"
+                    "[Wiimote2]\n"
+                    "\n"
+                    "[Wiimote3]\n"
+                    "\n"
+                    "[Wiimote4]\n"
+                    "\n"
+                    "[BalanceBoard]\n"
+                    "Source = 0");
 
         for (int playerNumber = 1; playerNumber <= 4; playerNumber++) { // for each player
             if (previousConfigManager.getPlayerConfig(playerNumber, "EmulatedController") == "gc") {
@@ -664,7 +641,7 @@ public:
 
 //            QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), QStringList("--exec=C:/Users/Justi/Documents/Games/Console/Nintendo GameCube/Super Smash Bros. Melee (USA).iso"));
         if (!QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), args)) {
-            QMessageBox::warning(this, tr("Warning"), tr("Dolphin.exe not found. Make sure your paths are configured incorrectly. "
+            QMessageBox::warning(this, tr("Warning"), tr("Path to open Dolphin not found. Make sure your paths are configured incorrectly. "
                                                          "For more information, please read README.md or see "
                                                          "https://github.com/Anti-Shulk/DolphinControllerConfig"));
             QApplication::quit();

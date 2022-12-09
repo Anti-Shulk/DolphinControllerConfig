@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QApplication>
+#include <QDebug>
 
 class Writer {
 public:
@@ -21,15 +22,15 @@ private:
 
 
 public:
-    Writer(QWidget* parent, Mode mode, const QString& filePath) :
+    Writer(QWidget*&& parent, Mode mode, const QString& filePath) :
         filePath(filePath),
         originalFile(filePath),
         mode(mode),
         tempFile(filePath + ".tmp")
     {
         if (!originalFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
-                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + originalFile.errorString() +
-                                     "The file path is: " + filePath +
+                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + originalFile.errorString() + " "
+                                     "The file path is: " + filePath + ". "
                                      "Make sure your paths are configured incorrectly. "
                                      "For more information, please read README.md or see "
                                      "https://github.com/Anti-Shulk/DolphinControllerConfig");
@@ -39,8 +40,8 @@ public:
         }
 
         if (!tempFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
-                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to create temporary file: ") + tempFile.errorString() +
-                                     "The file path of the original file is: " + filePath +
+                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to create temporary file: ") + tempFile.errorString() + " "
+                                     "The file path of the original file is: " + filePath + ". "
                                      "Make sure your paths are configured incorrectly. "
                                      "For more information, please read README.md or see "
                                      "https://github.com/Anti-Shulk/DolphinControllerConfig");
@@ -59,6 +60,13 @@ public:
     void setMode(Mode mode)
     {
         this->mode = mode;
+    }
+
+    void write(const QString& toWrite)
+    {
+        QTextStream originalFileStream(&originalFile);
+        originalFileStream.seek(0);
+        originalFileStream << toWrite;
     }
 
     void replaceFileText(const QString& toBeReplaced, const QString& toReplaceWith)
@@ -148,14 +156,14 @@ public:
 };
 class FileReader {
 public:
-    static QString fileToString(QWidget* parent, const QString& filePath) // take a file and convert it to a stream with \n for each line also
+    static QString fileToString(QWidget*&& parent, const QString& filePath) // take a file and convert it to a stream with \n for each line also
     {
         QString contents;
         QFile file(filePath);
 
         if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
-                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + file.errorString() +
-                                     "The file path is: " + filePath +
+                QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + file.errorString() + " "
+                                     "The file path is: " + filePath + ". "
                                      "Make sure your paths are configured incorrectly. "
                                      "For more information, please read README.md or see "
                                      "https://github.com/Anti-Shulk/DolphinControllerConfig");
