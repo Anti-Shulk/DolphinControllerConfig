@@ -24,10 +24,10 @@ dolphinconfigpath=[Enter Dophin Config Path]
 dolphinpath=[Enter Path to launch Dolphin]
 ```
 #### On Windows, this is located at 
-`C:\Users\[Your Username]\AppData\Roaming\DolphinControllerConfig\Settings.ini`
+`C:/Users/[Your Username]/AppData/oaming/DolphinControllerConfig/Settings.ini`
 This directory can be accessed easier by typing `%appdata%` into the address bar of file explorer, then opening the `DolphinContollerConfig` directory and the settings.ini file which can be opened with notepad.
 #### On Mac, this is located at 
-`/users/[Your Username]/.config/DolphinControllerConfig\Settings.ini`
+`/users/[Your Username]/.config/DolphinControllerConfig/Settings.ini`
 This directory can be access by opening your home directory in finder by clicking `Go` at the top while finder is open then clicking home. After, you have to click `"Command" + "Shift" + "." (period)` to see hidden files and open the `.config` directory.
 
 Dolphin Controller Configurator will not lanuch into the main interface until `setup` is set to `true`. 
