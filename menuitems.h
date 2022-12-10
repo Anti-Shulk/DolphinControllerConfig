@@ -24,7 +24,7 @@ private:
     }
 
 public:
-    MenuItems(Ui::MainWindow*&& ui)
+    MenuItems(Ui::MainWindow* const& ui)
         : frames{ui->DolphinConfigWindowFrame, ui->PlayerFrame, ui->RealControllerFrame, ui->PortFrame, ui->EmulatedControllerFrame, ui->ProfileFrame, ui->LaunchFrame}
     { }
 

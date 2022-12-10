@@ -22,7 +22,7 @@ private:
 
 
 public:
-    Writer(QWidget*&& parent, Mode mode, const QString& filePath) :
+    Writer(QWidget* const& parent, Mode mode, const QString& filePath) :
         filePath(filePath),
         originalFile(filePath),
         mode(mode),
@@ -156,7 +156,7 @@ public:
 };
 class FileReader {
 public:
-    static QString fileToString(QWidget*&& parent, const QString& filePath) // take a file and convert it to a stream with \n for each line also
+    static QString fileToString(QWidget* const& parent, const QString& filePath) // take a file and convert it to a stream with \n for each line also
     {
         QString contents;
         QFile file(filePath);
