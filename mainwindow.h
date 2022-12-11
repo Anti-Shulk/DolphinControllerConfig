@@ -117,6 +117,7 @@ private:
     std::unique_ptr<QShortcut> right;
     std::unique_ptr<QShortcut> enter;
     std::unique_ptr<QShortcut> s;
+    std::unique_ptr<QShortcut> c;
     QStringList args;
 
     QString settingsPath{""};
@@ -306,6 +307,7 @@ public:
         right = std::make_unique<QShortcut>(QKeySequence(Qt::Key_Right), this);
         enter = std::make_unique<QShortcut>(QKeySequence(Qt::Key_Space), this);
         s = std::make_unique<QShortcut>(QKeySequence(Qt::Key_S), this);
+        c = std::make_unique<QShortcut>(QKeySequence(Qt::Key_C), this);
 
 
         // connect 'activated' signal of shortcuts to MainWindow functions
@@ -315,6 +317,7 @@ public:
         QObject::connect(right.get(), &QShortcut::activated, this, &MainWindow::rightPressed);
         QObject::connect(enter.get(), &QShortcut::activated, this, &MainWindow::launchPressed);
         QObject::connect(s.get(), &QShortcut::activated, this, &MainWindow::sPressed);
+        QObject::connect(c.get(), &QShortcut::activated, this, &MainWindow::cPressed);
 
 
         menuItems = std::make_unique<MenuItems>(ui.get());
@@ -726,6 +729,13 @@ public:
         }
     }
 
+    void openDolphinConfigDirectory()
+    {
+        if (!QDesktopServices::openUrl(QUrl::fromLocalFile(settingsManager.getSetting("Paths", "dolphinconfigpath")))) {
+            QMessageBox::warning(this, tr("Warning"), tr("Unable to open Dolphin Config Directory"));
+        }
+    }
+
 
 
 private slots:
@@ -784,6 +794,10 @@ private slots:
     void sPressed()
     {
         openSettings();
+    }
+    void cPressed()
+    {
+        openDolphinConfigDirectory();
     }
 
 };
