@@ -109,15 +109,17 @@ private:
     SettingsManager settingsManager;
     PreviousConfigurationManager previousConfigManager;
 
-    std::unique_ptr<QGamepad>gamepad;
+    std::unique_ptr<QGamepad> gamepad;
 
     std::unique_ptr<QShortcut> up;
     std::unique_ptr<QShortcut> down;
     std::unique_ptr<QShortcut> left;
     std::unique_ptr<QShortcut> right;
     std::unique_ptr<QShortcut> enter;
+    std::unique_ptr<QShortcut> s;
     QStringList args;
 
+    QString settingsPath{""};
 
 public:
 
@@ -127,15 +129,61 @@ public:
           ui(std::make_unique<Ui::MainWindow>()),
           args(args)
     {
+        #ifdef Q_OS_WIN32
+            settingsPath = QDir::homePath() + "/AppData/Roaming/DolphinControllerConfig/Settings.ini";
+        #endif
+        #ifdef Q_OS_LINUX
+            settingsPath = QDir::homePath() + "/.config/DolphinControllerConfig/Settings.ini";
+        #endif
+        #ifdef Q_OS_MACOS
+            settingsPath = QDir::homePath() + "/.config/DolphinControllerConfig/Settings.ini";
+        #endif
+
         if (settingsManager.getSetting("Setup", "setup") != "true") {
+
             settingsManager.setSetting("Setup", "setup", "false");
             settingsManager.setSetting("RealControllers", "ex", "Example Controller");
             settingsManager.setSetting("ProfileSuffixes", "examplesuffix", "with example suffix");
             settingsManager.setSetting("Paths", "dolphinconfigpath", "[Enter Dophin Config Path]");
             settingsManager.setSetting("Paths", "dolphinpath", "[Enter Path to launch Dolphin]");
-            QMessageBox::warning(this, tr("Warning"), tr("DolphinControllerConfigurator has not been setup. Please read README.md. "
-                                                         "For more information see https://github.com/Anti-Shulk/DolphinControllerConfig"));
+
+            QMessageBox messageBox(this);
+            messageBox.setText("DolphinControllerConfigurator has not been setup.\n\n"
+                               "After setup, if you would like to open Settings.ini again, press \"s\" while in the app\n\n"
+                               "You must enter a Dolphin Path and a Dolphin Config path and change \"setup\" to true "
+                               "for app to launch properly\n\n"
+                               "For more information see https://github.com/Anti-Shulk/DolphinControllerConfig\n\n"
+                               "Your home directory name / username is \"" + QDir::home().dirName() + "\"\n\n"
+                               "Would you like to auto populate settings?");
+            messageBox.setIcon(QMessageBox::Warning);
+            messageBox.addButton(QMessageBox::Yes); // 16384
+            messageBox.addButton(QMessageBox::No);
+            messageBox.addButton("Open Settings.ini", QMessageBox::ActionRole); // 1
+            switch (messageBox.exec())
+            {
+            case 16384:
+                #ifdef Q_OS_WIN32
+                    settingsManager.setSetting("Paths", "dolphinconfigpath",
+                                           QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/Dolphin Emulator/Config"
+                    );
+                #endif
+                #ifdef Q_OS_LINUX
+                    settingsManager.setSetting("Paths", "dolphinconfigpath", QDir::homePath() + "/.var/app/org.DolphinEmu.dolphin-emu/config/dolphin-emu");
+                    settingsManager.setSetting("Paths", "dolphinpath", "flatpak");
+                #endif
+                #ifdef Q_OS_MACOS
+                    settingsManager.setSetting("Paths", "dolphinconfigpath", QDir::homePath() + "/Library/Application Support/Dolphin/Config");
+                    settingsManager.setSetting("Paths", "dolphinpath", "/Applications/Dolphin.app");
+                #endif
+                QDesktopServices::openUrl(QUrl::fromLocalFile(settingsPath));
+                break;
+            case 0:
+                QDesktopServices::openUrl(QUrl::fromLocalFile(settingsPath));
+                break;
+            }
+
             QApplication::quit();
+
             delete this;
             return;
         }
@@ -252,6 +300,8 @@ public:
         left = std::make_unique<QShortcut>(QKeySequence(Qt::Key_Left), this);
         right = std::make_unique<QShortcut>(QKeySequence(Qt::Key_Right), this);
         enter = std::make_unique<QShortcut>(QKeySequence(Qt::Key_Space), this);
+        s = std::make_unique<QShortcut>(QKeySequence(Qt::Key_S), this);
+
 
         // connect 'activated' signal of shortcuts to MainWindow functions
         QObject::connect(down.get(), &QShortcut::activated, this, &MainWindow::downPressed);
@@ -259,6 +309,7 @@ public:
         QObject::connect(left.get(), &QShortcut::activated, this, &MainWindow::leftPressed);
         QObject::connect(right.get(), &QShortcut::activated, this, &MainWindow::rightPressed);
         QObject::connect(enter.get(), &QShortcut::activated, this, &MainWindow::launchPressed);
+        QObject::connect(s.get(), &QShortcut::activated, this, &MainWindow::sPressed);
 
 
         menuItems = std::make_unique<MenuItems>(ui.get());
@@ -478,9 +529,10 @@ public:
 
                         if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
                                 QMessageBox::warning(this, tr("Warning"), tr("Unable to open file : ") + file.errorString() + " "
-                                                     "The file path is: " + fileInfo.filePath() + ". "
-                                                     "Make sure your paths are configured incorrectly. "
-                                                     "For more information, please read README.md or see "
+                                                     "The file path is: " + fileInfo.filePath() + ".\n\n"
+                                                     "Make sure your paths are configured correctly.\n\n"
+                                                     "You can open settings by pressing \"s\" while in the app"
+                                                     "For more information, see "
                                                      "https://github.com/Anti-Shulk/DolphinControllerConfig");
                                 QApplication::quit();
                                 delete this;
@@ -638,11 +690,21 @@ public:
 
             }
         }
-
-//            QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), QStringList("--exec=C:/Users/Justi/Documents/Games/Console/Nintendo GameCube/Super Smash Bros. Melee (USA).iso"));
+        if (settingsManager.getSetting("Paths", "dolphinpath") == "flatpak") {
+            if (!QProcess::startDetached("flatpak", QStringList() << "run" << "org.DolphinEmu.dolphin-emu" << args)) {
+                QMessageBox::warning(this, tr("Warning"), tr("Dolphin Flatpak failed to open.\n\n"
+                                                             "For more information, see "
+                                                             "https://github.com/Anti-Shulk/DolphinControllerConfig"));
+                QApplication::quit();
+                delete this;
+                return;
+            }
+        }
         if (!QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), args)) {
-            QMessageBox::warning(this, tr("Warning"), tr("Path to open Dolphin not found. Make sure your paths are configured incorrectly. "
-                                                         "For more information, please read README.md or see "
+            QMessageBox::warning(this, tr("Warning"), tr("Path to open Dolphin not found.\n\n"
+                                                         "Make sure your paths are configured correctly.\n\n"
+                                                         "You can open settings by pressing \"s\" while in the app"
+                                                         "For more information, see "
                                                          "https://github.com/Anti-Shulk/DolphinControllerConfig"));
             QApplication::quit();
             delete this;
@@ -650,6 +712,13 @@ public:
         }
         QThread::sleep(5);
         QApplication::quit();
+    }
+
+    void openSettings()
+    {
+        if (!QDesktopServices::openUrl(QUrl::fromLocalFile(settingsPath))) {
+            QMessageBox::warning(this, tr("Warning"), tr("Unable to open Settings.ini"));
+        }
     }
 
 
@@ -706,6 +775,10 @@ private slots:
     void rightPressed()
     {
         selectionAction(Selector::Increase, listSelector.getSelection());
+    }
+    void sPressed()
+    {
+        openSettings();
     }
 
 };

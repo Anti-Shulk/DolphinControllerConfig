@@ -30,10 +30,11 @@ public:
     {
         if (!originalFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
                 QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + originalFile.errorString() + " "
-                                     "The file path is: " + filePath + ". "
-                                     "Make sure your paths are configured incorrectly. "
-                                     "For more information, please read README.md or see "
-                                     "https://github.com/Anti-Shulk/DolphinControllerConfig");
+                                     "The file path is: " + filePath + ".\n\n"
+                                   "Make sure your paths are configured correctly.\n\n"
+                                   "You can open settings by pressing \"s\" while in the app"
+                                   "For more information, see "
+                                   "https://github.com/Anti-Shulk/DolphinControllerConfig");
                 QApplication::quit();
                 delete parent;
                 return;
@@ -41,10 +42,11 @@ public:
 
         if (!tempFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
                 QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to create temporary file: ") + tempFile.errorString() + " "
-                                     "The file path of the original file is: " + filePath + ". "
-                                     "Make sure your paths are configured incorrectly. "
-                                     "For more information, please read README.md or see "
-                                     "https://github.com/Anti-Shulk/DolphinControllerConfig");
+                                     "The file path of the original file is: " + filePath + ".\n\n"
+                                    "Make sure your paths are configured correctly.\n\n"
+                                    "You can open settings by pressing \"s\" while in the app"
+                                    "For more information, see "
+                                    "https://github.com/Anti-Shulk/DolphinControllerConfig");
                 QApplication::quit();
                 delete parent;
                 return;
@@ -164,9 +166,10 @@ public:
         if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
                 QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + file.errorString() + " "
                                      "The file path is: " + filePath + ". "
-                                     "Make sure your paths are configured incorrectly. "
-                                     "For more information, please read README.md or see "
-                                     "https://github.com/Anti-Shulk/DolphinControllerConfig");
+                               "Make sure your paths are configured correctly.\n\n"
+                               "You can open settings by pressing \"s\" while in the app"
+                               "For more information, see "
+                               "https://github.com/Anti-Shulk/DolphinControllerConfig");
                 return nullptr;
         }
 
