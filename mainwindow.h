@@ -147,6 +147,11 @@ public:
             settingsManager.setSetting("Paths", "dolphinconfigpath", "[Enter Dophin Config Path]");
             settingsManager.setSetting("Paths", "dolphinpath", "[Enter Path to launch Dolphin]");
 
+            previousConfigManager.setPlayerConfig(1, "Profile", "none");
+            previousConfigManager.setPlayerConfig(2, "Profile", "none");
+            previousConfigManager.setPlayerConfig(3, "Profile", "none");
+            previousConfigManager.setPlayerConfig(4, "Profile", "none");
+
             QMessageBox messageBox(this);
             messageBox.setText("DolphinControllerConfigurator has not been setup.\n\n"
                                "After setup, if you would like to open Settings.ini again, press \"s\" while in the app\n\n"

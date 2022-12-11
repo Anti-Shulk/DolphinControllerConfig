@@ -166,7 +166,7 @@ public:
         if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
                 QMessageBox::warning(parent, parent->tr("Warning"), parent->tr("Unable to open file: ") + file.errorString() + " "
                                      "The file path is: " + filePath + ". "
-                               "Make sure your paths are configured correctly.\n\n"
+                               "Make sure your paths are configured correctly. Perhaps this file does not exist\n\n"
                                "You can open settings by pressing \"s\" while in the app"
                                "For more information, see "
                                "https://github.com/Anti-Shulk/DolphinControllerConfig");
