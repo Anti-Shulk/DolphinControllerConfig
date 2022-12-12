@@ -17,10 +17,13 @@ int main(int argc, char *argv[])
     for (int i = 1; i < argc; i++) {
         args.append(argv[i]);
     }
+    QFontDatabase::addApplicationFont("/Users/henry/Downloads/futura-light-opentype.otf");
+
 
     if (QFontDatabase::addApplicationFont(QStringLiteral(":/fonts/Exo 2 Condensed")) == -1) {
         qWarning() << "Failed to load Roboto-Regular.ttf";
     }
+
     if (QFontDatabase::addApplicationFont(QStringLiteral(":/fonts/Exo 2 Semi Bold Condensed")) == -1) {
         qWarning() << "Failed to load RobotoMono-Regular.ttf";
     }

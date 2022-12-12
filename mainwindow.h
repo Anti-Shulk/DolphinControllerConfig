@@ -255,6 +255,10 @@ public:
                         );
         }
 
+        QFontDatabase fontDatabase;
+
+        QFont regularFont = fontDatabase.font("Exo 2", "Exo 2 Condensed", labelFontSize);
+
         QLabel* labels[] = {
             ui->DolphinConfigWindowLabel,
             ui->PlayerLabel,
@@ -266,9 +270,10 @@ public:
         };
 
         for (QLabel* label : labels) {
-            label->setFont(QFont("Exo 2 Condensed", labelFontSize));
+            label->setFont(regularFont);
         }
 
+        QFont semiBoldFont = fontDatabase.font("Exo 2", "Exo 2 Semi Bold Condensed", selectionFontSize);
 
         QLabel* selections[] = {
             ui->DolphinConfigWIndowSelection,
@@ -280,7 +285,7 @@ public:
         };
 
         for (QLabel* selection : selections) {
-            selection->setFont(QFont("Exo 2 Condensed", selectionFontSize));
+            selection->setFont(semiBoldFont);
         }
 
         /* Scaling Code end */
