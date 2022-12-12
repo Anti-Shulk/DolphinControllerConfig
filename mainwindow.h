@@ -179,8 +179,9 @@ public:
                 #endif
                 #ifdef Q_OS_MACOS
                     settingsManager.setSetting("Paths", "dolphinconfigpath", QDir::homePath() + "/Library/Application Support/Dolphin/Config");
-                    settingsManager.setSetting("Paths", "dolphinpath", "/Applications/Dolphin.app");
+                    settingsManager.setSetting("Paths", "dolphinpath", "default mac");
                 #endif
+
                 QDesktopServices::openUrl(QUrl::fromLocalFile(settingsPath));
                 break;
             case 0:
@@ -708,6 +709,18 @@ public:
                 return;
             }
         }
+
+        if (settingsManager.getSetting("Paths", "dolphinpath") == "default mac") {
+            if (!QProcess::startDetached("Dolphin", args)) {
+                QMessageBox::warning(this, tr("Warning"), tr("Dolphin Flatpak failed to open.\n\n"
+                                                             "For more information, see "
+                                                             "https://github.com/Anti-Shulk/DolphinControllerConfig"));
+                QApplication::quit();
+                delete this;
+                return;
+            }
+        }
+
         if (!QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), args)) {
             QMessageBox::warning(this, tr("Warning"), tr("Path to open Dolphin not found.\n\n"
                                                          "Make sure your paths are configured correctly.\n\n"
