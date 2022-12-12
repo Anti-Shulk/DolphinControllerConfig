@@ -704,32 +704,19 @@ public:
                 QMessageBox::warning(this, tr("Warning"), tr("Dolphin Flatpak failed to open.\n\n"
                                                              "For more information, see "
                                                              "https://github.com/Anti-Shulk/DolphinControllerConfig"));
-                QApplication::quit();
-                delete this;
-                return;
             }
-        }
-
-        if (settingsManager.getSetting("Paths", "dolphinpath") == "default mac") {
+        } else if (settingsManager.getSetting("Paths", "dolphinpath") == "default mac") {
             if (!QProcess::startDetached("open", QStringList() << "/Applications/Dolphin.app" << args)) {
                 QMessageBox::warning(this, tr("Warning"), tr("Dolphin failed to open.\n\n"
                                                              "For more information, see "
                                                              "https://github.com/Anti-Shulk/DolphinControllerConfig"));
-                QApplication::quit();
-                delete this;
-                return;
             }
-        }
-
-        if (!QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), args)) {
+        } else if (!QProcess::startDetached(settingsManager.getSetting("Paths", "dolphinpath"), args)) {
             QMessageBox::warning(this, tr("Warning"), tr("Path to open Dolphin not found.\n\n"
                                                          "Make sure your paths are configured correctly.\n\n"
                                                          "You can open settings by pressing \"s\" while in the app"
                                                          "For more information, see "
                                                          "https://github.com/Anti-Shulk/DolphinControllerConfig"));
-            QApplication::quit();
-            delete this;
-            return;
         }
         QThread::sleep(5);
         QApplication::quit();
