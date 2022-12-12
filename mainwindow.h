@@ -711,7 +711,7 @@ public:
         }
 
         if (settingsManager.getSetting("Paths", "dolphinpath") == "default mac") {
-            if (!QProcess::startDetached("open", QStringList() << "/Appliations/Dolphin.app" << args)) {
+            if (!QProcess::startDetached("open", QStringList() << "/Applications/Dolphin.app" << args)) {
                 QMessageBox::warning(this, tr("Warning"), tr("Dolphin failed to open.\n\n"
                                                              "For more information, see "
                                                              "https://github.com/Anti-Shulk/DolphinControllerConfig"));
