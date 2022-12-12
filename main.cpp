@@ -19,8 +19,8 @@ int main(int argc, char *argv[])
     }
 
     if (QFontDatabase::addApplicationFont(QStringLiteral(":/fonts/Exo 2 Condensed")) == -1) {
-            qWarning() << "Failed to load Roboto-Regular.ttf";
-        }
+        qWarning() << "Failed to load Roboto-Regular.ttf";
+    }
     if (QFontDatabase::addApplicationFont(QStringLiteral(":/fonts/Exo 2 Semi Bold Condensed")) == -1) {
         qWarning() << "Failed to load RobotoMono-Regular.ttf";
     }
