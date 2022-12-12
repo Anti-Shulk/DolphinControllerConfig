@@ -18,9 +18,16 @@ int main(int argc, char *argv[])
         args.append(argv[i]);
     }
 
-    QFontDatabase::addApplicationFont(":/fonts/Exo 2 Condensed");
+    if (QFontDatabase::addApplicationFont(QStringLiteral(":/fonts/Exo 2 Condensed")) == -1) {
+            qWarning() << "Failed to load Roboto-Regular.ttf";
+        }
+    if (QFontDatabase::addApplicationFont(QStringLiteral(":/fonts/Exo 2 Semi Bold Condensed")) == -1) {
+        qWarning() << "Failed to load RobotoMono-Regular.ttf";
+    }
 
-    QFontDatabase::addApplicationFont(":/fonts/Exo 2 Semi Bold Condensed");
+    QApplication::setFont(QFont("Exo 2 Condensed"));
+    QApplication::setFont(QFont("Exo 2 Semi Bold Condensed"));
+
 
 
     QTranslator translator;
