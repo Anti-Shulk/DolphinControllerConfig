@@ -353,7 +353,7 @@ public:
 
     QString arrowAdder(QString arrowlessString)
     {
-        return "⯇ " + arrowlessString + " ⯈";
+        return "< " + arrowlessString + " >";
     }
 
 
